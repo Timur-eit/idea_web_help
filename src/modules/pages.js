@@ -1,4 +1,5 @@
 import {createSelector} from 'reselect'
+import data from '../data/HelpTOC.json'
 
 /**
  * Constants
@@ -15,7 +16,7 @@ export const SET_ACTIVE_PAGE = `${prefix}/SET_ACTIVE_PAGE`
  * */
 
 export const ReducerRecord = {
-  pageList: null,
+  pageList: data,
   activePage: null
 }
 
@@ -41,7 +42,8 @@ export default function reducer(state = ReducerRecord, action) {
  * */
 
 export const stateSelector = state => state[moduleName]
-export const pageListSelector = createSelector(stateSelector, state => state[moduleName])
+export const pageListSelector = createSelector(stateSelector, state => state.pageList)
+export const activePageSelector = createSelector(stateSelector, state => state.activePage)
 
 
 /**
