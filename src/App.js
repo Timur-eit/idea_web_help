@@ -1,5 +1,11 @@
 import logo from './logo.svg';
 import './App.scss';
+import { connect } from 'react-redux'
+import {
+  pageListSelector,
+  setActivePage,
+  activePageSelector,
+} from './modules/pages'
 
 function App() {
   return (
@@ -22,4 +28,10 @@ function App() {
   );
 }
 
-export default App;
+
+export default connect(state => ({
+  pageList: pageListSelector(state),
+  activePage: activePageSelector(state),
+}), {
+  setActivePage,
+})(App)
