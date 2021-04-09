@@ -1,0 +1,29 @@
+.menu-list__container {
+  background-color: #F9F9F9;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+
+
+  a {
+    text-decoration: none;
+    color: black;
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+        
+    &:visited {
+      color: inherit;
+    }
+  }
+}
+
+.disclose-arrow {
+  width: 10px;
+  height: 10px;
+  background: url(../../shared/img/down-arrow.svg) no-repeat center;
+  transition-duration: 0.5s;
+  position: absolute;
+  left: 10px;
+}

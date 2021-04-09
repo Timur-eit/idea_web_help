@@ -6,7 +6,7 @@ import {
   pageListSelector,
   setActivePage,
   activePageSelector,
-} from '../../modules/pages'
+} from 'modules/pages'
 
 export default connect(state => ({
   pageList: pageListSelector(state),
