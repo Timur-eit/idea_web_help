@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.scss';
 import { connect } from 'react-redux'
 import {
@@ -7,23 +6,32 @@ import {
   activePageSelector,
 } from './modules/pages'
 
-function App() {
+function App({
+  pageList
+}) {
+  
+  let idList
+
+  const getIds = (pageList) => {
+    const pages = pageList.entities.pages
+    const result = []
+    for (const page in pages) {
+      result.push(pages[page].id)
+      // console.log(pages[page].id)
+    }
+    idList = result
+    console.log(idList)
+    
+  }
+
+  
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <button onClick={() => getIds(pageList)}>Test - show all IDs</button>
+        <div>{idList}</div>
       </header>
+      
     </div>
   );
 }
