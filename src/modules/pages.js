@@ -17,7 +17,7 @@ export const SET_ACTIVE_PAGE = `${prefix}/SET_ACTIVE_PAGE`
 
 export const ReducerRecord = {
   pageList: data,
-  activePage: null
+  activePage: []
 }
 
 export default function reducer(state = ReducerRecord, action) {
@@ -50,7 +50,20 @@ export const activePageSelector = createSelector(stateSelector, state => state.a
  * Action Creator
  * */
 
-export const setActivePage = pageId => ({
-  type: SET_ACTIVE_PAGE,
-  payload: pageId
-})
+//  export const setActivePage = pageId => ({
+//   type: SET_ACTIVE_PAGE,
+//   payload: pageId
+// })
+
+export function setActivePage(pageId) {
+  return (dispatch, getState) => {
+    const { activePage } = getState()[moduleName]
+    const newActivePage = [...activePage]
+    newActivePage.push(pageId)
+
+    dispatch ({
+      type: SET_ACTIVE_PAGE,
+      payload: newActivePage
+    })
+  }
+}

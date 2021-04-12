@@ -1,13 +1,23 @@
-import React from "react"
+import React, { /** useEffect */ } from "react"
 import 'App.scss'
 import Menu from 'Components/Menu'
+import Content from 'Components/Content'
+
+//  import { connect } from 'react-redux'
 
 
-function App() {
+function App({
+  topLevelIds
+}) {
+
+  // useEffect(() => {
+  //   // initialize something - topId ?
+  // }, [])
 
   return (
     <div className="App">
-      <Menu/>
+      <Menu />
+      <Content />
     </div>
   )
 }
@@ -15,4 +25,9 @@ function App() {
 
 export default App
 
+// export default connect(state => ({
+  // ?
+// }), {
+  // ?
+// })(App)
 

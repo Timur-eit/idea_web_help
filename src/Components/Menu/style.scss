@@ -3,7 +3,10 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 20px;
+  padding: 15px;
+  height: 100vh;
+  width: 200px;
+  border-right: 1px solid #E0E0E0;
 
 
   a {
@@ -11,8 +14,9 @@
     color: black;
     margin-left: 5px;
     display: flex;
-    align-items: center;
-        
+    align-items: flex-start;
+    font-size: 12px;
+    
     &:visited {
       color: inherit;
     }
@@ -20,10 +24,15 @@
 }
 
 .disclose-arrow {
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   background: url(../../shared/img/down-arrow.svg) no-repeat center;
   transition-duration: 0.5s;
   position: absolute;
   left: 10px;
+  padding-top: 1em;
+
+  .rotated {
+    transform: rotate(-180deg);
+  }
 }
