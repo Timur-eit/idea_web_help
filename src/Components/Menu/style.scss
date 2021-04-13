@@ -32,7 +32,11 @@
   left: 10px;
   padding-top: 1em;
 
-  .rotated {
+  &.rotated {
     transform: rotate(-180deg);
+  }
+
+  &.hidden {
+    display: none;
   }
 }

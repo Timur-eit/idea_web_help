@@ -2,32 +2,22 @@ import React, { /** useEffect */ } from "react"
 import 'App.scss'
 import Menu from 'Components/Menu'
 import Content from 'Components/Content'
+import {Switch, Route} from "react-router-dom"
 
-//  import { connect } from 'react-redux'
-
-
-function App({
-  topLevelIds
-}) {
-
-  // useEffect(() => {
-  //   // initialize something - topId ?
-  // }, [])
+function App() {
 
   return (
     <div className="App">
       <Menu />
-      <Content />
+      <Switch>
+        <Route path="/">
+          <Content />
+        </Route>
+      </Switch>
     </div>
   )
 }
 
 
 export default App
-
-// export default connect(state => ({
-  // ?
-// }), {
-  // ?
-// })(App)
 

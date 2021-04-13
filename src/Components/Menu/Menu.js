@@ -1,11 +1,13 @@
 import './style.scss'
-import classNames from 'classnames'
+import {Link} from 'react-router-dom'
+import classNames from "classnames"
 
 function Menu({
-  topLevelIds,
-  pageList,
-  setActivePage,
-}) {
+                activePages,
+                topLevelIds,
+                pageList,
+                setActivePage,
+              }) {
 
   const pages = pageList.entities.pages
   // console.log(pageList)
@@ -15,20 +17,24 @@ function Menu({
       {topLevelIds.map(id => {
         // console.log(id)
         const url = pages[id].url
-        return <a key={id} href={url ? url : '/'} onClick={pages[id].pages && pages[id].pages.length > 0 ? (e) => {
-          // e.preventDefault() // ??? otherwise doesn't work
-          setActivePage(id)
-          // console.log(id)
-        } : null}>
-              {pages[id].pages && pages[id].pages.length > 0 && <div className='disclose-arrow'></div>}
-              {pages[id].title}
-            </a>
-          })}
+        const isNested = pages[id].pages && pages[id].pages.length > 0
+
+        const classes = classNames({
+          'disclose-arrow' : true,
+          'hidden' : !isNested,
+          'rotated': activePages.includes(id)
+        })
+
+        return <Link key={id} to={url ? url : '/'} onClick={(e) => {
+          isNested && setActivePage(id)
+        }}>
+          <div className={classes}/>
+          {pages[id].title}
+        </Link>
+      })}
     </div>
   )
 }
-
-
 
 export default Menu
 

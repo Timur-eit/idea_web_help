@@ -5,12 +5,12 @@ import {
   topLevelIdsSelector,
   pageListSelector,
   setActivePage,
-  activePageSelector,
+  activePagesSelector,
 } from 'modules/pages'
 
 export default connect(state => ({
   pageList: pageListSelector(state),
-  activePage: activePageSelector(state),
+  activePages: activePagesSelector(state),
   topLevelIds: topLevelIdsSelector(state),
 }), {
   setActivePage,
