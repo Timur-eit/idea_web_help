@@ -1,4 +1,4 @@
-import React, { /** useEffect */ } from "react"
+import React from "react"
 import 'App.scss'
 import Menu from 'Components/Menu'
 import Content from 'Components/Content'
