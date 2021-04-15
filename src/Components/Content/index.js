@@ -1,14 +1,19 @@
-import React from 'react'
-import './style.scss'
+import {connect} from 'react-redux'
+import Content from './Content'
 
-function Content() {
+import {
+  topLevelIdsSelector,
+  pageListSelector,
+  setActivePage,
+  activePagesSelector,
+  currentLinkSelector,
+} from 'modules/pages'
 
-  return (
-    <div className='content__container'>
-      <div className='content'>Web-Help Visual Guidelines</div>
-    </div>
-  )
-}
-
-
-export default Content
+export default connect(state => ({
+  pageList: pageListSelector(state),
+  activePages: activePagesSelector(state),
+  topLevelIds: topLevelIdsSelector(state),
+  currentLink: currentLinkSelector(state),
+}), {
+  setActivePage,
+})(Content)

@@ -9,6 +9,7 @@ function List({
                 topLevelIds = pageList.entities.topLevelIds,
                 pages = pageList.entities.pages,
                 setActivePage,
+                setCurrentLink,
                 // isTopLevel = true,
               }) {
 
@@ -34,27 +35,30 @@ function List({
 
         return (
           <>
-          <Link className={linkClasses} key={id} to={url ? url : '/'} onClick={() => {
-          isNested && setActivePage(id)
-        }}>
-          {/* {isTopLevel && <div className={arrowClasses}></div>} */}
-          <div className={arrowClasses} style={{'left': `${1 + pages[id].level}em`}}></div>
-          
-          {pages[id].title}
-          
-          
-        </Link>
-        {isNested && activePages.includes(id) && <div className='submenu'>
+            <Link key={id} className={linkClasses} to={url ? url : '/'} onClick={(e) => {
+              const currentUrl = e.target.href
+              setCurrentLink(currentUrl, id)
+
+              isNested && setActivePage(id)
+              }}>
+              {/* {isTopLevel && <div className={arrowClasses}></div>} */}
+              <div className={arrowClasses} style={{'left': `${1 + pages[id].level}em`}}></div>
+              {pages[id].title}
+            </Link>
+            
+            {isNested && activePages.includes(id) && <div className='submenu'>
               <List
                 activePages = {activePages}
                 pageList = {pageList} 
                 topLevelIds = {pages[id].pages}
                 pages = {pageList.entities.pages}
                 setActivePage = {setActivePage}
+                setCurrentLink={setCurrentLink}
+                key={pages[id]}
                 // isTopLevel = {false}
               />
-            </div>
-          }
+              </div>
+            }
         </>)
       })}
     </div>
@@ -68,16 +72,18 @@ function Menu({
   topLevelIds = pageList.entities.topLevelIds,
   pages = pageList.entities.pages,
   setActivePage,
-  // isTopLevel = true,
+  setCurrentLink,
+  isTopLevel = true,
 }) {
   return (
     <div className='menu-list__container'>
-      <List 
+      <List key={activePages}
         activePages={activePages}
         pageList={pageList}
         topLevelIds={topLevelIds}
         pages={pages}
         setActivePage={setActivePage}
+        setCurrentLink={setCurrentLink}
         // isTopLevel={isTopLevel}
       />
     </div>
@@ -85,5 +91,3 @@ function Menu({
 } 
 
 export default Menu
-
-
