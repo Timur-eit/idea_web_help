@@ -1,9 +1,10 @@
 import './style.scss'
 import {Link} from 'react-router-dom'
 import classNames from "classnames"
-// import data from '../../data/HelpTOC.json'
+import Mousetrap  from 'mousetrap'
 import {batch} from 'react-redux'
 import {Fragment} from 'react'
+
 
 function List({
                 activePages,

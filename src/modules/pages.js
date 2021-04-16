@@ -48,7 +48,7 @@ export default function reducer(state = ReducerRecord, action) {
  * */
 
 export const stateSelector = state => state[moduleName]
-export const pageListSelector = createSelector(stateSelector, state => state.pageList)
+export const pageListSelector = createSelector(stateSelector, state => state.pageList) // TODO: make filter here
 export const topLevelIdsSelector = createSelector(stateSelector, state => (state.pageList && state.pageList.topLevelIds) || [])
 export const activePagesSelector = createSelector(stateSelector, state => state.activePages)
 export const currentLinkSelector = createSelector(stateSelector, state => state.currentLink)
