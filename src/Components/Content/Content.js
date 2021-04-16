@@ -18,7 +18,7 @@ function Content({
       <Switch>
         <Route path={currentLink.url}>
           {/* <div>{pages[currentLink.id].anchors ? pages[currentLink.id].anchors : null}</div> */}
-          {currentLink.id}
+          <div>Test: {currentLink.id}</div>
         </Route>
       </Switch>
     </div>
