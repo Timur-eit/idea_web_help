@@ -1,7 +1,9 @@
 import './style.scss'
 import {Link} from 'react-router-dom'
 import classNames from "classnames"
-// import data from '../../data/HelpTOC.json' 
+// import data from '../../data/HelpTOC.json'
+import {batch} from 'react-redux'
+import {Fragment} from 'react'
 
 function List({
                 activePages,
@@ -34,15 +36,15 @@ function List({
         })
 
         return (
-          <>
-            <Link key={id} className={linkClasses} to={url ? url : '/'} onClick={(e) => {
+          <Fragment key={id}>
+            <Link  className={linkClasses} to={url ? url : '/'} onClick={(e) => {
               const currentUrl = e.target.href
-              setCurrentLink(currentUrl, id)
-
-              isNested && setActivePage(id)
+              batch(() => {
+                setCurrentLink(currentUrl, id)
+                isNested && setActivePage(id)
+              })
               }}>
-              {/* {isTopLevel && <div className={arrowClasses}></div>} */}
-              <div className={arrowClasses} style={{'left': `${1 + pages[id].level}em`}}></div>
+              <div className={arrowClasses} style={{'left': `-1em`}}></div>
               {pages[id].title}
             </Link>
             
@@ -59,7 +61,7 @@ function List({
               />
               </div>
             }
-        </>)
+        </Fragment>)
       })}
     </div>
   )

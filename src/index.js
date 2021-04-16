@@ -6,16 +6,14 @@ import {Provider} from 'react-redux'
 import store from 'redux/store'
 import 'reset.scss'
 import 'index.scss';
-
-import {
-  BrowserRouter as Router
-} from "react-router-dom";
+import {ConnectedRouter} from "connected-react-router"
+import history from './history'
 
 ReactDOM.render(
   <Provider store={store}>
-    <Router>
+    <ConnectedRouter history={history}>
       <App />
-    </Router>
+    </ConnectedRouter>
   </Provider>,
   document.getElementById('root')
 );

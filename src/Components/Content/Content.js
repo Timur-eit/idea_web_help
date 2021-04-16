@@ -1,26 +1,25 @@
 import React from 'react'
-import {
-  Switch,
-  Route,
-} from "react-router-dom";
+import {Route, Switch} from "react-router-dom"
 import './style.scss'
 
 function Content({
-                  pageList,
-                  currentLink
-}) {
+                   routerPage,
+                   currentLink
+                 }) {
 
   // const pages = pageList.entities.pages
 
   return (
     <div className='content__container'>
-    <div className='content'>Web-Help Visual Guidelines</div>
-      <Switch>
-        <Route path={currentLink.url}>
-          {/* <div>{pages[currentLink.id].anchors ? pages[currentLink.id].anchors : null}</div> */}
-          <div>Test: {currentLink.id}</div>
-        </Route>
-      </Switch>
+      <div className='content'>Web-Help Visual Guidelines</div>
+      {/*<Switch>*/}
+      {/*  <Route path={currentLink.url}>*/}
+          <div>
+            Test: {currentLink.id} <br/>
+            {routerPage.join(', ')}
+          </div>
+      {/*  </Route>*/}
+      {/*</Switch>*/}
     </div>
   )
 }

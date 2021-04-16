@@ -52,7 +52,11 @@ export const pageListSelector = createSelector(stateSelector, state => state.pag
 export const topLevelIdsSelector = createSelector(stateSelector, state => (state.pageList && state.pageList.topLevelIds) || [])
 export const activePagesSelector = createSelector(stateSelector, state => state.activePages)
 export const currentLinkSelector = createSelector(stateSelector, state => state.currentLink)
-
+export const routerPageSelector = createSelector(state => state, state => {
+  const id = state[moduleName].currentLink.id
+  const page = state[moduleName].pageList.entities.pages[id]
+  return (page && page['anchors']) || []
+})
 
 /**
  * Action Creator
