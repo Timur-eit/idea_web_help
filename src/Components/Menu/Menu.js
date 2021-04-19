@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import classNames from "classnames"
 // import data from '../../data/HelpTOC.json'
 import {batch} from 'react-redux'
-import {Fragment} from 'react'
+import {Fragment, useEffect} from 'react'
 
 function List({
                 activePages,
@@ -12,11 +12,9 @@ function List({
                 pages = pageList.entities.pages,
                 setActivePage,
                 setCurrentLink,
+                currentLink,
                 // isTopLevel = true,
               }) {
-
-  // const pages = pageList.entities.pages
-  // console.log(pageList)
 
   return (
     <div>
@@ -33,22 +31,28 @@ function List({
         const linkClasses = classNames({
           
           'nested-link' : pages[id].level > 0 && !isNested,
+          'selected-link' : currentLink.id === id
         })
+
+        
 
         return (
           <Fragment key={id}>
-            <Link  className={linkClasses} to={url ? url : '/'} onClick={(e) => {
+            <div className='link-background'></div>
+            <Link className={linkClasses} to={url ? url : '/'} onClick={(e) => {
               const currentUrl = e.target.href
               batch(() => {
                 setCurrentLink(currentUrl, id)
                 isNested && setActivePage(id)
               })
+              
+              
               }}>
               <div className={arrowClasses} style={{'left': `-1em`}}></div>
               {pages[id].title}
             </Link>
             
-            {isNested && activePages.includes(id) && <div className='submenu'>
+              {isNested && activePages.includes(id) && <div className='submenu'>
               <List
                 activePages = {activePages}
                 pageList = {pageList} 
@@ -56,7 +60,8 @@ function List({
                 pages = {pageList.entities.pages}
                 setActivePage = {setActivePage}
                 setCurrentLink={setCurrentLink}
-                key={pages[id]}
+                // key={pages[id]}
+                currentLink={currentLink}
                 // isTopLevel = {false}
               />
               </div>
@@ -75,7 +80,8 @@ function Menu({
   pages = pageList.entities.pages,
   setActivePage,
   setCurrentLink,
-  isTopLevel = true,
+  currentLink,
+  // isTopLevel = true,
 }) {
   return (
     <div className='menu-list__container'>
@@ -86,6 +92,7 @@ function Menu({
         pages={pages}
         setActivePage={setActivePage}
         setCurrentLink={setCurrentLink}
+        currentLink={currentLink}
         // isTopLevel={isTopLevel}
       />
     </div>
