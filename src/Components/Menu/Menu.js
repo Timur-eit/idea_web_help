@@ -6,25 +6,55 @@ import {batch} from 'react-redux'
 import {Fragment, useRef, useMemo} from 'react'
 import {getCoords} from '../../utils'
 
+
 function List(props) {
   const {
     activePages,
     pageList,
-    topLevelIds = pageList.entities.topLevelIds,
+    topLevelIds,
     pages = pageList.entities.pages,
     setActivePage,
-    setCurrentLink,
-    currentLink,
+    setCurrentId,
+    currentId,
   } = props
 
-  const elementDomParams = useMemo(() => currentLink && getCoords(document.getElementById(currentLink.id)), [currentLink])
-  console.log(elementDomParams)
+  const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])
+  // console.log(elementDomParams)
+
+  Mousetrap.bind('down', () => {
+    
+    if (!currentId) {
+      setCurrentId(pageList.topLevelIds[0])
+    } else {
+      let currentPageList = null
+    
+      if (pages[currentId].level === 0) {
+        currentPageList = pageList.topLevelIds
+      } else {
+        currentPageList = pages[pages[currentId].parentId].pages
+      }
+
+      let index = currentPageList.indexOf(currentId)
+      let nextId = index === currentPageList.length - 1 ? currentPageList[0] : currentPageList[index + 1] 
+          
+      // console.log(currentId)
+      // console.log(pages[currentId].level)
+      // console.log(currentPageList)
+      // console.log(nextId)
+      setCurrentId(nextId)
+     
+    }
+  })
+
 
   return (
     <div>
       {topLevelIds.map((id, key) => {
+        {/* console.log(topLevelIds) */}
         const url = pages[id].url
-        const nextId =  key === topLevelIds.length -1 ? topLevelIds[0] : topLevelIds[key + 1]
+        // console.log(key)
+        {/* const nextId = id === currentId.id ? topLevelIds[key + 1] : topLevelIds[0] */}
+        {/* const nextId = key === topLevelIds.length -1 ? topLevelIds[0] : topLevelIds[key + 1] */}
         const isNested = pages[id].pages && pages[id].pages.length > 0
 
         const arrowClasses = classNames({
@@ -36,31 +66,56 @@ function List(props) {
         const linkClasses = classNames({
           
           'nested-link' : pages[id].level > 0 && !isNested,
-          'selected-link' : currentLink && currentLink.id === id
+          'selected-link' : currentId && currentId === id
         })
 
         const linkBgClasses = classNames({
           'link-background' : true,
-          'active' : currentLink && currentLink.id === id
+          'active' : currentId && currentId === id
         })
 
-        Mousetrap.bind('down', () => {
+        Mousetrap.bind('', () => {
+          let nextId
+          
+          if (currentId) {
+            // nextId = pages[pages.indexOf(id) + 1]
+            const index = topLevelIds.indexOf(id)
+            const nextId = () => {
+              if (index === topLevelIds.length - 1) {
+                return topLevelIds[0]
+              } else {
+                return topLevelIds[index + 1]
+              }
+            }
+            console.log(nextId(), topLevelIds)
+          }
+          
           batch(() => {
-            console.log(pages[nextId].url, nextId, isNested)
-            setCurrentLink(pages[nextId].url, nextId)
-            setActivePage(nextId)
+            {/* console.log(pages[nextId].url, nextId, isNested) */}
+            {/* console.log(topLevelIds) */}
+            {/* const currentUrl = pages[nextId].url ? pages[nextId].url : '/' */}
+            {/* setCurrentId(currentUrl, nextId) */}
+
+            {/* setCurrentId('currentUrl', nextId)
+            setActivePage(nextId) */}
           })
         })
+
+        {/* Mousetrap.bind('4', function() { alert('4'); }); */}
+
+        {/* Mousetrap.bind('esc', function() { console.log('escape'); }, 'keyup'); */}
+
+
 
         return (
           <Fragment key={id}>
             <div className={linkBgClasses} style={{ height: elementDomParams ? elementDomParams.height : 0}}></div>
 
             <Link id={id} className={linkClasses} to={url ? url : '/'} onClick={(e) => {
-              const currentUrl = e.target.href
+              // const currentUrl = e.target.href
 
               batch(() => {
-                setCurrentLink(currentUrl, id)
+                setCurrentId(id)
                 isNested && setActivePage(id)
               })
               
@@ -77,9 +132,9 @@ function List(props) {
                 topLevelIds = {pages[id].pages}
                 pages = {pageList.entities.pages}
                 setActivePage = {setActivePage}
-                setCurrentLink={setCurrentLink}
+                setCurrentId={setCurrentId}
                 // key={pages[id]}
-                currentLink={currentLink}
+                currentId={currentId}
                 // isTopLevel = {false}
               />
               </div>
@@ -94,13 +149,14 @@ function List(props) {
 function Menu({
   activePages,
   pageList,
-  topLevelIds = pageList.entities.topLevelIds,
+  topLevelIds,
   pages = pageList.entities.pages,
   setActivePage,
-  setCurrentLink,
-  currentLink,
+  setCurrentId,
+  currentId,
   // isTopLevel = true,
 }) {
+
   return (
     <div className='menu-list__container'>
       <List key={activePages}
@@ -109,8 +165,8 @@ function Menu({
         topLevelIds={topLevelIds}
         pages={pages}
         setActivePage={setActivePage}
-        setCurrentLink={setCurrentLink}
-        currentLink={currentLink}
+        setCurrentId={setCurrentId}
+        currentId={currentId}
         // isTopLevel={isTopLevel}
       />
     </div>

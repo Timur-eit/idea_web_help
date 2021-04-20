@@ -7,8 +7,8 @@ import {
   setActivePage,
   activePagesSelector,
   
-  currentLinkSelector,
-  setCurrentLink,
+  currentIdSelector,
+  setCurrentId,
 
 } from 'modules/pages'
 
@@ -16,8 +16,8 @@ export default connect(state => ({
   pageList: pageListSelector(state),
   activePages: activePagesSelector(state),
   topLevelIds: topLevelIdsSelector(state),
-  currentLink: currentLinkSelector(state),
+  currentId: currentIdSelector(state),
 }), {
   setActivePage,
-  setCurrentLink,
+  setCurrentId,
 })(Menu)

@@ -6,7 +6,7 @@ import {
   pageListSelector,
   setActivePage,
   activePagesSelector,
-  currentLinkSelector,
+  currentIdSelector,
   routerPageSelector
 } from 'modules/pages'
 
@@ -14,8 +14,9 @@ export default connect(state => ({
   pageList: pageListSelector(state),
   activePages: activePagesSelector(state),
   topLevelIds: topLevelIdsSelector(state),
-  currentLink: currentLinkSelector(state),
+  currentId: currentIdSelector(state),
   routerPage: routerPageSelector(state),
 }), {
   setActivePage,
 })(Content)
+
