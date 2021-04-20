@@ -8,6 +8,7 @@
   width: 20%;
   border-right: 1px solid #E0E0E0;
   overflow: auto;
+  position: relative;
 
 
   a {
@@ -61,7 +62,8 @@
 }
 
 .link-background {
-  width: calc(20% + 30px);
+  // width: calc(20% + 30px);
+  width: 100%;
   position: absolute;
   // z-index: 11;
   background-color: rgba(0,0,0, 0.1);
