@@ -27,6 +27,13 @@
     &.nested-link:hover {
       text-decoration: underline;
     }
+
+    &.selected-link {
+      display: block;
+      background-color: grey;
+      font-weight: bold;
+      
+    }
   }
 }
 
@@ -51,6 +58,8 @@
 
 .submenu {
   padding-left: 15px;
-  // background-color: inherit;
-  // height: 100vh;
+}
+
+.link-background {
+  width: 100%;
 }

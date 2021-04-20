@@ -85,7 +85,7 @@ export function setCurrentLink(url, id) {
     
     dispatch({
       type: SET_CURRENT_LINK,
-      payload: {url: url, id: id}
+      payload: {url, id}
     })
   }
 }
