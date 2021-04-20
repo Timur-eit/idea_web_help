@@ -37,13 +37,15 @@
 
 
 .disclose-arrow {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   background: url(../../shared/img/down-arrow.svg) no-repeat center;
   transition-duration: 0.5s;
   padding-top: 1em;
-  margin-right: 4px;
-  z-index: 9;
+  // margin-right: 4px;
+  // z-index: 9;
+  position: absolute;
+  left: -1px;
 
   &.rotated {
     transform: rotate(-180deg);
@@ -61,7 +63,7 @@
 .link-background {
   width: calc(20% + 30px);
   position: absolute;
-  z-index: 11;
+  // z-index: 11;
   background-color: rgba(0,0,0, 0.1);
   left: 0;
   display: none;

@@ -66,7 +66,7 @@ function List(props) {
               
               
               }}>
-              <span className={arrowClasses}></span>
+              <div className={arrowClasses} style={{'left': `-1em`}}></div>
               {pages[id].title}
             </Link>
             
