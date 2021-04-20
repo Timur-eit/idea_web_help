@@ -19,7 +19,7 @@ export const SET_CURRENT_LINK = `${prefix}/SET_CURRENT_LINK`
 export const ReducerRecord = {
   pageList: data,
   activePages: [],
-  currentLink: {},
+  currentLink: null,
 }
 
 export default function reducer(state = ReducerRecord, action) {
@@ -53,7 +53,7 @@ export const topLevelIdsSelector = createSelector(stateSelector, state => (state
 export const activePagesSelector = createSelector(stateSelector, state => state.activePages)
 export const currentLinkSelector = createSelector(stateSelector, state => state.currentLink)
 export const routerPageSelector = createSelector(state => state, state => {
-  const id = state[moduleName].currentLink.id
+  const id = state[moduleName].currentLink && state[moduleName].currentLink.id
   const page = state[moduleName].pageList.entities.pages[id]
   return (page && page['anchors']) || []
 })

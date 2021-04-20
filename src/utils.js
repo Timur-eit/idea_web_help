@@ -52,3 +52,14 @@ export const delObject = (obj, key, val) => {
   }
   return objects
 }
+
+export function getCoords(elem) {
+  const box = elem.getBoundingClientRect()
+  return {
+    top: box.top + window.pageYOffset + elem.clientHeight,
+    bottom: box.bottom + window.pageYOffset,
+    left: box.left + window.pageXOffset,
+    width: box.width,
+    height: box.height
+  }
+}

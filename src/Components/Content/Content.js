@@ -4,7 +4,7 @@ import './style.scss'
 
 function Content({
                    routerPage,
-                   currentLink
+                   currentLink = {}
                  }) {
 
   // const pages = pageList.entities.pages
@@ -16,7 +16,7 @@ function Content({
       {/*<Switch>*/}
       {/*  <Route path={currentLink.url}>*/}
           <div>
-            Test: {currentLink.id} <br/>
+            Test: {currentLink && currentLink.id} <br/>
             {routerPage.join(', ')}
           </div>
       {/*  </Route>*/}
