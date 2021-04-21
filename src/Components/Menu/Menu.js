@@ -4,7 +4,8 @@ import classNames from "classnames"
 import Mousetrap  from 'mousetrap'
 import {batch} from 'react-redux'
 import {Fragment, useRef, useMemo} from 'react'
-import {getCoords} from '../../utils'
+import {getCoords} from 'utils'
+import {upDownKeysHandler} from 'utils'
 
 
 function List(props) {
@@ -12,49 +13,22 @@ function List(props) {
     activePages,
     pageList,
     topLevelIds,
-    pages = pageList.entities.pages,
+    
     setActivePage,
     setCurrentId,
     currentId,
   } = props
 
+  const pages = pageList.entities.pages;
   const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])
-  // console.log(elementDomParams)
-
-  Mousetrap.bind('down', () => {
-    
-    if (!currentId) {
-      setCurrentId(pageList.topLevelIds[0])
-    } else {
-      let currentPageList = null
-    
-      if (pages[currentId].level === 0) {
-        currentPageList = pageList.topLevelIds
-      } else {
-        currentPageList = pages[pages[currentId].parentId].pages
-      }
-
-      let index = currentPageList.indexOf(currentId)
-      let nextId = index === currentPageList.length - 1 ? currentPageList[0] : currentPageList[index + 1] 
-          
-      // console.log(currentId)
-      // console.log(pages[currentId].level)
-      // console.log(currentPageList)
-      // console.log(nextId)
-      setCurrentId(nextId)
-     
-    }
-  })
-
+  Mousetrap.bind('down', () => upDownKeysHandler(currentId, pageList, pages, setCurrentId, 'down'))
+  Mousetrap.bind('up', () => upDownKeysHandler(currentId, pageList, pages, setCurrentId, 'up'))
 
   return (
     <div>
-      {topLevelIds.map((id, key) => {
-        {/* console.log(topLevelIds) */}
+      {topLevelIds.map((id) => {
+
         const url = pages[id].url
-        // console.log(key)
-        {/* const nextId = id === currentId.id ? topLevelIds[key + 1] : topLevelIds[0] */}
-        {/* const nextId = key === topLevelIds.length -1 ? topLevelIds[0] : topLevelIds[key + 1] */}
         const isNested = pages[id].pages && pages[id].pages.length > 0
 
         const arrowClasses = classNames({
@@ -130,7 +104,7 @@ function List(props) {
                 activePages = {activePages}
                 pageList = {pageList} 
                 topLevelIds = {pages[id].pages}
-                pages = {pageList.entities.pages}
+                // pages = {pageList.entities.pages}
                 setActivePage = {setActivePage}
                 setCurrentId={setCurrentId}
                 // key={pages[id]}
@@ -150,7 +124,7 @@ function Menu({
   activePages,
   pageList,
   topLevelIds,
-  pages = pageList.entities.pages,
+  // pages = pageList.entities.pages,
   setActivePage,
   setCurrentId,
   currentId,
@@ -163,7 +137,7 @@ function Menu({
         activePages={activePages}
         pageList={pageList}
         topLevelIds={topLevelIds}
-        pages={pages}
+        // pages={pages}
         setActivePage={setActivePage}
         setCurrentId={setCurrentId}
         currentId={currentId}

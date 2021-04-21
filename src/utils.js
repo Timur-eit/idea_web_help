@@ -63,3 +63,40 @@ export function getCoords(elem) {
     height: box.height
   }
 }
+
+/**
+* @param {String} currentId
+* @param {Object} [pageList=store.pages.pageList]
+* @param {Array} [pages=pageList.entities.pages]
+* @param {Function} setCurrentId - actionCreator from Redux reducer
+* @param {String} direction ['up', 'down']
+*/
+export function upDownKeysHandler(
+  currentId,
+  pageList,
+  pages = pageList.entities.pages,
+  setCurrentId,
+  direction,
+) {
+
+  if (!currentId) {
+    setCurrentId(pageList.topLevelIds[0])
+  } else {
+    let currentPageList = (
+      pages[currentId].level === 0 ? pageList.topLevelIds : pages[pages[currentId].parentId].pages
+    )
+    const index = currentPageList.indexOf(currentId)
+    const nextId = () => {
+      if (direction === 'down') {
+        return (index === currentPageList.length - 1 ? currentPageList[0] : currentPageList[index + 1])
+      } else if (direction === 'up') {
+        return (index === 0 ? currentPageList[currentPageList.length - 1] : currentPageList[index - 1])
+      } else {
+        console.error('wrong direction in Mousetrap: input "up" or "down"')
+        return currentId
+      }
+    }
+    setCurrentId(nextId())
+   
+  }
+}
