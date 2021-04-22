@@ -21,25 +21,49 @@ function List(props) {
 
   const pages = pageList.entities.pages;
   const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])
+  const isNested = (id) => pages[id].pages && pages[id].pages.length > 0
+
   Mousetrap.bind('down', () => upDownKeysHandler(currentId, pageList, pages, setCurrentId, 'down'))
   Mousetrap.bind('up', () => upDownKeysHandler(currentId, pageList, pages, setCurrentId, 'up'))
+
+  Mousetrap.bind('right', () => {
+    if (currentId && isNested(currentId)) {
+    const nextId = pages[currentId].pages[0]
+    
+    // ? why batch does not work here? => ↓
+    // ! TypeError: Cannot read property 'getBoundingClientRect' of null
+    setActivePage(currentId)
+    setCurrentId(nextId)
+   }
+  })
+
+  Mousetrap.bind('left', () => {
+    if (currentId && pages[currentId].level !== 0) {
+    const prevId = pages[currentId].parentId
+    batch(() => {
+      setActivePage(prevId)
+      setCurrentId(prevId)
+    })
+   }
+  })
+
+  console.log(pageList)
 
   return (
     <div>
       {topLevelIds.map((id) => {
 
         const url = pages[id].url
-        const isNested = pages[id].pages && pages[id].pages.length > 0
-
+        
         const arrowClasses = classNames({
           'disclose-arrow' : true,
-          'hidden' : !isNested,
+          'hidden' : !isNested(id),
           'rotated': activePages.includes(id)
         })
 
         const linkClasses = classNames({
           
-          'nested-link' : pages[id].level > 0 && !isNested,
+          'nested-link' : pages[id].level > 0 && !isNested(id),
           'selected-link' : currentId && currentId === id
         })
 
@@ -47,39 +71,6 @@ function List(props) {
           'link-background' : true,
           'active' : currentId && currentId === id
         })
-
-        Mousetrap.bind('', () => {
-          let nextId
-          
-          if (currentId) {
-            // nextId = pages[pages.indexOf(id) + 1]
-            const index = topLevelIds.indexOf(id)
-            const nextId = () => {
-              if (index === topLevelIds.length - 1) {
-                return topLevelIds[0]
-              } else {
-                return topLevelIds[index + 1]
-              }
-            }
-            console.log(nextId(), topLevelIds)
-          }
-          
-          batch(() => {
-            {/* console.log(pages[nextId].url, nextId, isNested) */}
-            {/* console.log(topLevelIds) */}
-            {/* const currentUrl = pages[nextId].url ? pages[nextId].url : '/' */}
-            {/* setCurrentId(currentUrl, nextId) */}
-
-            {/* setCurrentId('currentUrl', nextId)
-            setActivePage(nextId) */}
-          })
-        })
-
-        {/* Mousetrap.bind('4', function() { alert('4'); }); */}
-
-        {/* Mousetrap.bind('esc', function() { console.log('escape'); }, 'keyup'); */}
-
-
 
         return (
           <Fragment key={id}>
@@ -90,16 +81,15 @@ function List(props) {
 
               batch(() => {
                 setCurrentId(id)
-                isNested && setActivePage(id)
+                isNested(id) && setActivePage(id)
               })
-              
               
               }}>
               <div className={arrowClasses} style={{'left': `-1em`}}></div>
               {pages[id].title}
             </Link>
             
-              {isNested && activePages.includes(id) && <div className='submenu'>
+              {isNested(id) && activePages.includes(id) && <div className='submenu'>
               <List
                 activePages = {activePages}
                 pageList = {pageList} 
