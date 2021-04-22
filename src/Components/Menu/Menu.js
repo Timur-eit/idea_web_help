@@ -23,11 +23,11 @@ function List(props) {
   const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])
   const isNested = (id) => pages[id].pages && pages[id].pages.length > 0
 
-  Mousetrap.bind('down', () => upDownKeysHandler(currentId, pageList, pages, setCurrentId, 'down'))
-  Mousetrap.bind('up', () => upDownKeysHandler(currentId, pageList, pages, setCurrentId, 'up'))
+  Mousetrap.bind('down', () => upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, 'down'))
+  Mousetrap.bind('up', () => upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, 'up'))
 
   Mousetrap.bind('right', () => {
-    if (currentId && isNested(currentId)) {
+    if (currentId && isNested(currentId) && !activePages.includes(currentId)) {
     const nextId = pages[currentId].pages[0]
     
     // ? why batch does not work here? => ↓
@@ -43,6 +43,11 @@ function List(props) {
     batch(() => {
       setActivePage(prevId)
       setCurrentId(prevId)
+    })
+   } else if (currentId && activePages.includes(currentId)) {
+    batch(() => {
+      setActivePage(currentId)
+      setCurrentId(currentId)
     })
    }
   })
