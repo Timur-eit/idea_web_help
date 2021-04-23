@@ -12,9 +12,9 @@ export const getObjects = (obj, key, val) => {
   let objects = []
   for (let i in obj) {
     if (!obj.hasOwnProperty(i)) continue
-    if (typeof obj[i] == 'object') {
+    if (typeof obj[i] === 'object') {
       objects = objects.concat(getObjects(obj[i], key, val))
-    } else if (i == key && obj[key] == val) {
+    } else if (i === key && obj[key] === val) {
       objects.push(obj)
     }
   }
@@ -27,9 +27,9 @@ export const setObject = (obj, key, val, set) => {
   let objects = obj
   for (let i in obj) {
     if (!obj.hasOwnProperty(i)) continue
-    if (typeof obj[i] == 'object') {
+    if (typeof obj[i] === 'object') {
       objects = setObject(obj[i], key, val, set)
-    } else if (i == key && obj[key] == val) {
+    } else if (i === key && obj[key] === val) {
       if (objects.child) objects.child.push(set)
     }
   }
@@ -41,9 +41,9 @@ export const delObject = (obj, key, val) => {
   let objects = obj, y = 0
   for (let i in obj) {
     if (!obj.hasOwnProperty(i)) continue
-    if (typeof obj[i] == 'object') {
+    if (typeof obj[i] === 'object') {
       let tempObj = obj
-      if (obj[i] && obj[i].id == val) {
+      if (obj[i] && obj[i].id === val) {
         tempObj = tempObj.splice(y, 1)
       }
       objects = delObject(tempObj[i], key, val)

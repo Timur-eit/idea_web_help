@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import classNames from "classnames"
 import Mousetrap  from 'mousetrap'
 import {batch} from 'react-redux'
-import {Fragment, useRef, useMemo} from 'react'
+import {Fragment, useMemo} from 'react'
 import {getCoords} from 'utils'
 import {upDownKeysHandler} from 'utils'
 
