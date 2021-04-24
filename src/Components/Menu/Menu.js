@@ -6,6 +6,7 @@ import {batch} from 'react-redux'
 import {Fragment, useMemo} from 'react'
 import {getCoords} from 'utils'
 import {upDownKeysHandler} from 'utils'
+import history from '../../history'
 
 
 function List(props) {
@@ -17,14 +18,15 @@ function List(props) {
     setActivePage,
     setCurrentId,
     currentId,
+    // history,
   } = props
 
   const pages = pageList.entities.pages;
   const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])
   const isNested = (id) => pages[id].pages && pages[id].pages.length > 0
 
-  Mousetrap.bind('down', () => upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, 'down'))
-  Mousetrap.bind('up', () => upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, 'up'))
+  Mousetrap.bind('down', () => upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, 'down', history))
+  Mousetrap.bind('up', () => upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, 'up', history))
 
   Mousetrap.bind('right', () => {
     if (currentId && isNested(currentId) && !activePages.includes(currentId)) {
@@ -34,6 +36,7 @@ function List(props) {
     // ! TypeError: Cannot read property 'getBoundingClientRect' of null
     setActivePage(currentId)
     setCurrentId(nextId)
+    history.push(pages[nextId].url)
    }
   })
 
@@ -44,15 +47,18 @@ function List(props) {
       setActivePage(prevId)
       setCurrentId(prevId)
     })
+    history.push(pages[prevId].url)
    } else if (currentId && activePages.includes(currentId)) {
     batch(() => {
       setActivePage(currentId)
       setCurrentId(currentId)
     })
+    history.push(pages[currentId].url)
    }
   })
 
   console.log(pageList)
+  
 
   return (
     <div>
@@ -94,7 +100,7 @@ function List(props) {
               {pages[id].title}
             </Link>
             
-              {isNested(id) && activePages.includes(id) && <div className='submenu'>
+            {isNested(id) && activePages.includes(id) && <div className='submenu'>
               <List
                 activePages = {activePages}
                 pageList = {pageList} 

@@ -53,7 +53,7 @@ export const topLevelIdsSelector = createSelector(stateSelector, state => (state
 export const activePagesSelector = createSelector(stateSelector, state => state.activePages)
 export const currentIdSelector = createSelector(stateSelector, state => state.currentId)
 export const routerPageSelector = createSelector(state => state, state => {
-  const id = state[moduleName].currentId && state[moduleName].currentId
+  const id = state[moduleName].currentId
   const page = state[moduleName].pageList.entities.pages[id]
   return (page && page['anchors']) || []
 })
