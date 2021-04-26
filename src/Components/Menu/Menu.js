@@ -7,6 +7,7 @@ import {Fragment, useMemo} from 'react'
 import {getCoords} from 'utils'
 import {upDownKeysHandler} from 'utils'
 import history from '../../history'
+import SearchFieldContainer from 'Components/SearchField'
 
 
 function List(props) {
@@ -61,7 +62,7 @@ function List(props) {
   
 
   return (
-    <div>
+    <div className='menu'>
       {topLevelIds.map((id) => {
 
         const url = pages[id].url
@@ -134,6 +135,7 @@ function Menu({
 
   return (
     <div className='menu-list__container'>
+      <SearchFieldContainer />
       <List key={activePages}
         activePages={activePages}
         pageList={pageList}
