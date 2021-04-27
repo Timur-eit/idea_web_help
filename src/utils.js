@@ -103,8 +103,7 @@ const getNextId = (pages, pageList, activePages, currentId, direction) => {
 * @param {Array} activePages - state from Redux store
 * @param {Function} setCurrentId - actionCreator from Redux reducer
 * @param {String} direction ['up', 'down']
-* ↓ does not applied for getNextId() ↓
-* @param {Object} history - React Router history
+* @param {Object} history - React Router history - does not applied for getNextId()
 */
 export function upDownKeysHandler(
   currentId,
