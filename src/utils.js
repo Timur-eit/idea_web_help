@@ -1,3 +1,4 @@
+import history from './history'
 
 export const getIds = (pageList) => {
   const pages = pageList.entities.pages
@@ -96,6 +97,53 @@ const getNextId = (pages, pageList, activePages, currentId, direction) => {
   }
 }
 
+class Cursor {
+  #parentId
+  #currentPageList
+  #parentIdPageList
+  #currentIdIndex
+  #parentIdIndex
+  #prevId
+
+
+
+  constructor(pages, currentId, pageList, activePages){
+    this.#parentId = pages[currentId].parentId
+    this.#currentPageList = pages[currentId].level === 0 ? pageList.topLevelIds : pages[this.#parentId].pages
+    this.#parentIdPageList = pages[currentId].level <= 1 ? pageList.topLevelIds : pages[pages[this.#parentId].parentId].pages
+    this.#currentIdIndex = this.#currentPageList.indexOf(currentId)
+    this.#parentIdIndex = this.#parentId ? this.#parentIdPageList.indexOf(this.#parentId) : this.#currentIdIndex
+    this.#prevId = this.#currentPageList[this.#currentIdIndex - 1]
+
+    this.pages = pages
+    this.currentId = currentId
+    this.pageList = pageList
+    this.activePages = activePages
+  }
+
+  getDownDirection = () => {
+    if (this.#currentIdIndex === this.#currentPageList.length - 1 && this.#parentId) {
+      return this.#parentIdPageList[this.#parentIdIndex + 1]
+    } else if (this.activePages.includes(this.currentId)) {
+      return this.pages[this.currentId].pages[0]
+    } else {
+      return (this.#currentIdIndex === this.#currentPageList.length - 1 ? this.#currentPageList[0] : this.#currentPageList[this.#currentIdIndex + 1])
+    }
+  }
+
+  getUpDirection= () => {
+    if (this.#currentIdIndex === 0 && this.#parentId) {
+      return this.#parentIdPageList[this.#parentIdIndex]
+    } else if (this.activePages.includes(this.#prevId)) {
+      const lastIndex = this.pages[this.#prevId].pages.length - 1
+      return this.pages[this.#prevId].pages[lastIndex]
+    } else {
+      return (this.#currentIdIndex === 0 ? this.#currentPageList[this.#currentPageList.length - 1] : this.#prevId)
+    }
+  }
+
+}
+
 /**
 * @param {String} currentId
 * @param {Object} [pageList=store.pages.pageList]
@@ -105,22 +153,29 @@ const getNextId = (pages, pageList, activePages, currentId, direction) => {
 * @param {String} direction ['up', 'down']
 * @param {Object} history - React Router history - does not applied for getNextId()
 */
+
 export function upDownKeysHandler(
   currentId,
   pageList,
   pages = pageList.entities.pages,
   activePages,
   setCurrentId,
-  direction,
-  history,
+  direction
 ) {
   if (!currentId) {
     const currentId = pageList.topLevelIds[0]
     setCurrentId(currentId)
-    history.push(pages[currentId].url)
+    pages[currentId] && history.push(pages[currentId].url)
   } else {
-    const nextId = getNextId(pages, pageList, activePages, currentId, direction)
+    const myCursor = new Cursor(pages, currentId, pageList, activePages)
+    let nextId = null
+    if(direction === 'up'){
+      nextId = myCursor.getUpDirection()
+    } else if(direction === 'down') {
+      nextId = myCursor.getDownDirection()
+    }
+    //const nextId = getNextId(pages, pageList, activePages, currentId, direction)
     setCurrentId(nextId)
-    history.push(pages[nextId].url)
+    pages[nextId] && history.push(pages[nextId].url)
   }
 }
