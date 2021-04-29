@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import classNames from "classnames"
 import Mousetrap from 'mousetrap'
 import {batch} from 'react-redux'
-import {Fragment, useCallback, useMemo} from 'react'
+import {Fragment, useCallback, useMemo, useState, useEffect} from 'react'
 import {getCoords, upDownKeysHandler} from 'utils'
 import history from '../../history'
 import SearchFieldContainer from 'Components/SearchField'
@@ -14,7 +14,7 @@ function List(props) {
     activePages,
     pageList,
     topLevelIds,
-
+    setMenuScrollPosition,
     setActivePage,
     setCurrentId,
     currentId,
@@ -59,7 +59,22 @@ function List(props) {
     }
   }, [currentId, activePages, pages, setActivePage, setCurrentId])
 
-  Mousetrap.bind('down', () => onKeyDownVerticalHandler('down'))
+
+
+  Mousetrap.bind('down', () => {
+    onKeyDownVerticalHandler('down')
+
+    const activeTopPosition = document.querySelector('.selected-link').getBoundingClientRect().top
+    const menuHeight = document.querySelector('.menu-list__container').offsetHeight
+    const currentMenuScrollPosition = document.querySelector('.menu-list__container').scrollTop
+
+    if(currentMenuScrollPosition > activeTopPosition){
+      setMenuScrollPosition(0)
+    } else if((menuHeight - activeTopPosition) < 40){
+      setMenuScrollPosition(currentMenuScrollPosition + 60)
+    }
+
+  })
   Mousetrap.bind('up', () => onKeyDownVerticalHandler('up'))
   Mousetrap.bind('right', onKeyDownRightHandler)
   Mousetrap.bind('left', onKeyDownLeftHandler)
@@ -112,7 +127,7 @@ function List(props) {
                 activePages={activePages}
                 pageList={pageList}
                 topLevelIds={pages[id].pages}
-                // pages = {pageList.entities.pages}
+                setMenuScrollPosition={setMenuScrollPosition}
                 setActivePage={setActivePage}
                 setCurrentId={setCurrentId}
                 // key={pages[id]}
@@ -138,6 +153,12 @@ function Menu({
                 currentId,
                 // isTopLevel = true,
               }) {
+  const [menuScrollPosition, setMenuScrollPosition] = useState(0)
+
+
+  useEffect(() => {
+    document.querySelector('.menu-list__container').scrollTop = menuScrollPosition
+  }, [menuScrollPosition])
 
   return (
     <div className='menu-list__container'>
@@ -150,6 +171,7 @@ function Menu({
             setActivePage={setActivePage}
             setCurrentId={setCurrentId}
             currentId={currentId}
+            setMenuScrollPosition={setMenuScrollPosition}
         // isTopLevel={isTopLevel}
       />
     </div>
