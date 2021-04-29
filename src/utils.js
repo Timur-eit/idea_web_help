@@ -143,6 +143,27 @@ export function upDownKeysHandler(
   }
 }
 
+class verticalHandler extends Cursor {
+  constructor(
+    currentId,
+    pageList,
+    pages = pageList.entities.pages,
+    activePages,
+    setCurrentId,
+    direction) {
+      super(currentId, pageList, activePages)
+      this.pages = pages
+      this.setCurrentId = setCurrentId
+      this.direction = direction
+    }
+    
+  getMoveCursor(direction) {
+    
+  }
+
+  
+}
+
 
 // const getNextId = (pages, pageList, activePages, currentId, direction) => {
 //   // @param info is shown in target function 'upDownKeysHandler' (see below)
