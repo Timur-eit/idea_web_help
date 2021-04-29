@@ -23,7 +23,8 @@ function List(props) {
 
   const pages = pageList.entities.pages
   const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])
-  const isNested = (id) => pages[id].pages && pages[id].pages.length > 0
+  // const isNested = (id) => pages[id].pages && pages[id].pages.length > 0
+  const isNested = useCallback((id) => pages[id].pages && pages[id].pages.length > 0, [pages])
 
   const onKeyDownVerticalHandler = useCallback((direction) => {
     upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, direction)
@@ -39,7 +40,7 @@ function List(props) {
       setCurrentId(nextId)
       history.push(pages[nextId].url)
     }
-  }, [currentId, isNested, activePages, pages, setActivePage, setCurrentId, history])
+  }, [currentId, isNested, activePages, pages, setActivePage, setCurrentId])
 
   const onKeyDownLeftHandler = useCallback(() => {
     if (currentId && pages[currentId].level !== 0) {
@@ -56,7 +57,7 @@ function List(props) {
       })
       history.push(pages[currentId].url)
     }
-  }, [currentId, isNested, activePages, pages, setActivePage, setCurrentId, history])
+  }, [currentId, activePages, pages, setActivePage, setCurrentId])
 
   Mousetrap.bind('down', () => onKeyDownVerticalHandler('down'))
   Mousetrap.bind('up', () => onKeyDownVerticalHandler('up'))

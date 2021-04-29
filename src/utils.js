@@ -64,39 +64,6 @@ export function getCoords(elem) {
     height: box.height
   }
 }
-
-const getNextId = (pages, pageList, activePages, currentId, direction) => {
-// @param info is shown in target function 'upDownKeysHandler' (see below)
-  const parentId = pages[currentId].parentId
-  const currentPageList = pages[currentId].level === 0 ? pageList.topLevelIds : pages[parentId].pages
-  const parentIdPageList = pages[currentId].level <= 1 ? pageList.topLevelIds : pages[pages[parentId].parentId].pages
-  const currentIdIndex = currentPageList.indexOf(currentId)
-  const parentIdIndex = parentId ? parentIdPageList.indexOf(parentId) : currentIdIndex      
-  const prevId = currentPageList[currentIdIndex - 1]
-  
-  if (direction === 'down') {        
-    if (currentIdIndex === currentPageList.length - 1 && parentId) {
-      return parentIdPageList[parentIdIndex + 1]
-    } else if (activePages.includes(currentId)) {
-      return pages[currentId].pages[0]
-    } else {
-      return (currentIdIndex === currentPageList.length - 1 ? currentPageList[0] : currentPageList[currentIdIndex + 1])
-    }
-  } else if (direction === 'up') {        
-    if (currentIdIndex === 0 && parentId) {
-      return parentIdPageList[parentIdIndex]
-    } else if (activePages.includes(prevId)) {
-      const lastIndex = pages[prevId].pages.length - 1
-      return pages[prevId].pages[lastIndex]
-    } else {
-      return (currentIdIndex === 0 ? currentPageList[currentPageList.length - 1] : prevId)
-    }
-  } else {
-    console.error('wrong direction in Mousetrap: input "up" or "down"')
-    return currentId
-  }
-}
-
 class Cursor {
   #parentId
   #currentPageList
@@ -104,8 +71,6 @@ class Cursor {
   #currentIdIndex
   #parentIdIndex
   #prevId
-
-
 
   constructor(pages, currentId, pageList, activePages){
     this.#parentId = pages[currentId].parentId
@@ -151,9 +116,7 @@ class Cursor {
 * @param {Array} activePages - state from Redux store
 * @param {Function} setCurrentId - actionCreator from Redux reducer
 * @param {String} direction ['up', 'down']
-* @param {Object} history - React Router history - does not applied for getNextId()
 */
-
 export function upDownKeysHandler(
   currentId,
   pageList,
@@ -179,3 +142,36 @@ export function upDownKeysHandler(
     pages[nextId] && history.push(pages[nextId].url)
   }
 }
+
+
+// const getNextId = (pages, pageList, activePages, currentId, direction) => {
+//   // @param info is shown in target function 'upDownKeysHandler' (see below)
+//     const parentId = pages[currentId].parentId
+//     const currentPageList = pages[currentId].level === 0 ? pageList.topLevelIds : pages[parentId].pages
+//     const parentIdPageList = pages[currentId].level <= 1 ? pageList.topLevelIds : pages[pages[parentId].parentId].pages
+//     const currentIdIndex = currentPageList.indexOf(currentId)
+//     const parentIdIndex = parentId ? parentIdPageList.indexOf(parentId) : currentIdIndex      
+//     const prevId = currentPageList[currentIdIndex - 1]
+    
+//     if (direction === 'down') {        
+//       if (currentIdIndex === currentPageList.length - 1 && parentId) {
+//         return parentIdPageList[parentIdIndex + 1]
+//       } else if (activePages.includes(currentId)) {
+//         return pages[currentId].pages[0]
+//       } else {
+//         return (currentIdIndex === currentPageList.length - 1 ? currentPageList[0] : currentPageList[currentIdIndex + 1])
+//       }
+//     } else if (direction === 'up') {        
+//       if (currentIdIndex === 0 && parentId) {
+//         return parentIdPageList[parentIdIndex]
+//       } else if (activePages.includes(prevId)) {
+//         const lastIndex = pages[prevId].pages.length - 1
+//         return pages[prevId].pages[lastIndex]
+//       } else {
+//         return (currentIdIndex === 0 ? currentPageList[currentPageList.length - 1] : prevId)
+//       }
+//     } else {
+//       console.error('wrong direction in Mousetrap: input "up" or "down"')
+//       return currentId
+//     }
+//   }
