@@ -4,7 +4,7 @@ import classNames from "classnames"
 import Mousetrap from 'mousetrap'
 import {batch} from 'react-redux'
 import {Fragment, useCallback, useMemo} from 'react'
-import {getCoords, upDownKeysHandler} from 'utils'
+import {getCoords, upDownKeysHandler, VerticalHandler} from 'utils'
 import history from '../../history'
 import SearchFieldContainer from 'Components/SearchField'
 
@@ -26,8 +26,13 @@ function List(props) {
   // const isNested = (id) => pages[id].pages && pages[id].pages.length > 0
   const isNested = useCallback((id) => pages[id].pages && pages[id].pages.length > 0, [pages])
 
+  // const onKeyDownVerticalHandler = useCallback((direction) => {
+  //   upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, direction)
+  // }, [currentId, pageList, pages, activePages, setCurrentId])
+  
   const onKeyDownVerticalHandler = useCallback((direction) => {
-    upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, direction)
+    const upDownKeysHandler = new VerticalHandler(currentId, pageList, pages, activePages, setCurrentId, direction)
+    return upDownKeysHandler.getMoveCursor(direction)
   }, [currentId, pageList, pages, activePages, setCurrentId])
 
   const onKeyDownRightHandler = useCallback(() => {
@@ -59,7 +64,9 @@ function List(props) {
     }
   }, [currentId, activePages, pages, setActivePage, setCurrentId])
 
+  // Mousetrap.bind('down', () => onKeyDownVerticalHandler('down'))
   Mousetrap.bind('down', () => onKeyDownVerticalHandler('down'))
+  // Mousetrap.bind('up', () => onKeyDownVerticalHandler('up'))
   Mousetrap.bind('up', () => onKeyDownVerticalHandler('up'))
   Mousetrap.bind('right', onKeyDownRightHandler)
   Mousetrap.bind('left', onKeyDownLeftHandler)
