@@ -26,8 +26,13 @@ function List(props) {
   // const isNested = (id) => pages[id].pages && pages[id].pages.length > 0
   const isNested = useCallback((id) => pages[id].pages && pages[id].pages.length > 0, [pages])
 
+  // const onKeyDownVerticalHandler = useCallback((direction) => {
+  //   upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, direction)
+  // }, [currentId, pageList, pages, activePages, setCurrentId])
+  
   const onKeyDownVerticalHandler = useCallback((direction) => {
-    upDownKeysHandler(currentId, pageList, pages, activePages, setCurrentId, direction)
+    const upDownKeysHandler = new VerticalHandler(currentId, pageList, pages, activePages, setCurrentId, direction)
+    return upDownKeysHandler.getMoveCursor(direction)
   }, [currentId, pageList, pages, activePages, setCurrentId])
 
   const onKeyDownRightHandler = useCallback(() => {
@@ -58,7 +63,6 @@ function List(props) {
       history.push(pages[currentId].url)
     }
   }, [currentId, activePages, pages, setActivePage, setCurrentId])
-
 
 
   Mousetrap.bind('down', () => {

@@ -142,6 +142,39 @@ export function upDownKeysHandler(
     pages[nextId] && history.push(pages[nextId].url)
   }
 }
+export class VerticalHandler extends Cursor {
+  constructor(
+    currentId,
+    pageList,
+    pages = pageList.entities.pages,
+    activePages,
+    setCurrentId,
+    direction) {
+      super(currentId, pageList, activePages)
+      this.pages = pages
+      this.setCurrentId = setCurrentId
+      this.direction = direction
+    }
+    
+  getMoveCursor = (direction) => {
+    if (!this.currentId) {
+      const currentId = this.pageList.topLevelIds[0]
+      this.setCurrentId(currentId)
+      this.pages[currentId] && history.push(this.pages[currentId].url)
+    } else {
+      // const myCursor = new Cursor(pages, currentId, pageList, activePages)
+      let nextId = null
+      if (direction === 'up') {
+        nextId = super.getUpDirection()
+      } else if (direction === 'down') {
+        nextId = super.getDownDirection()
+      }
+      // const nextId = getNextId(pages, pageList, activePages, currentId, direction)
+      this.setCurrentId(nextId)
+      this.pages[nextId] && history.push(this.pages[nextId].url)
+    }
+  }  
+}
 
 
 // const getNextId = (pages, pageList, activePages, currentId, direction) => {
