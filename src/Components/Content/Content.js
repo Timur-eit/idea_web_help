@@ -8,7 +8,7 @@ function Content({
                   currentId,
                  }) {
 
-  console.log(routerPage)
+  // console.log(routerPage)
 
   const anchors = pageList.entities.anchors
   // const currentIdAnchors = routerPage

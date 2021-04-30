@@ -1,3 +1,4 @@
+import {batch} from 'react-redux'
 import history from './history'
 
 export const getIds = (pageList) => {
@@ -64,6 +65,15 @@ export function getCoords(elem) {
     height: box.height
   }
 }
+
+
+/**
+* @param {Object} [pageList=store.pages.pageList]
+* @param {Array} [pages=pageList.entities.pages]
+* @param {String} currentId
+* @param {Array} activePages - state from Redux store
+* @param {Function} setCurrentId - actionCreator from Redux reducer
+*/
 class Cursor {
   #parentId
   #currentPageList
@@ -72,18 +82,18 @@ class Cursor {
   #parentIdIndex
   #prevId
 
-  constructor(pages, currentId, pageList, activePages){
+  constructor(pageList, pages, currentId, activePages){
+    this.pageList = pageList
+    this.pages = pages
+    this.currentId = currentId
+    this.activePages = activePages
+
     this.#parentId = pages[currentId].parentId
     this.#currentPageList = pages[currentId].level === 0 ? pageList.topLevelIds : pages[this.#parentId].pages
     this.#parentIdPageList = pages[currentId].level <= 1 ? pageList.topLevelIds : pages[pages[this.#parentId].parentId].pages
     this.#currentIdIndex = this.#currentPageList.indexOf(currentId)
     this.#parentIdIndex = this.#parentId ? this.#parentIdPageList.indexOf(this.#parentId) : this.#currentIdIndex
-    this.#prevId = this.#currentPageList[this.#currentIdIndex - 1]
-
-    this.pages = pages
-    this.currentId = currentId
-    this.pageList = pageList
-    this.activePages = activePages
+    this.#prevId = this.#currentPageList[this.#currentIdIndex - 1]     
   }
 
   getDownDirection = () => {
@@ -96,7 +106,7 @@ class Cursor {
     }
   }
 
-  getUpDirection= () => {
+  getUpDirection = () => {
     if (this.#currentIdIndex === 0 && this.#parentId) {
       return this.#parentIdPageList[this.#parentIdIndex]
     } else if (this.activePages.includes(this.#prevId)) {
@@ -106,75 +116,89 @@ class Cursor {
       return (this.#currentIdIndex === 0 ? this.#currentPageList[this.#currentPageList.length - 1] : this.#prevId)
     }
   }
-
 }
 
 /**
-* @param {String} currentId
-* @param {Object} [pageList=store.pages.pageList]
-* @param {Array} [pages=pageList.entities.pages]
-* @param {Array} activePages - state from Redux store
 * @param {Function} setCurrentId - actionCreator from Redux reducer
-* @param {String} direction ['up', 'down']
+* @param {Function} setActivePage - actionCreator from Redux reducer
+* @param {Function} isNested - predicate foo from Menu.js
 */
-export function upDownKeysHandler(
-  currentId,
-  pageList,
-  pages = pageList.entities.pages,
-  activePages,
-  setCurrentId,
-  direction
-) {
-  if (!currentId) {
-    const currentId = pageList.topLevelIds[0]
-    setCurrentId(currentId)
-    pages[currentId] && history.push(pages[currentId].url)
-  } else {
-    const myCursor = new Cursor(pages, currentId, pageList, activePages)
-    let nextId = null
-    if(direction === 'up'){
-      nextId = myCursor.getUpDirection()
-    } else if(direction === 'down') {
-      nextId = myCursor.getDownDirection()
-    }
-    //const nextId = getNextId(pages, pageList, activePages, currentId, direction)
-    setCurrentId(nextId)
-    pages[nextId] && history.push(pages[nextId].url)
-  }
-}
-export class VerticalHandler extends Cursor {
+export class VerticalHandler {
   constructor(
-    currentId,
     pageList,
     pages = pageList.entities.pages,
+    currentId,
     activePages,
     setCurrentId,
-    direction) {
-      super(currentId, pageList, activePages)
+    setActivePage,
+    isNested,
+    myCursor = currentId && new Cursor(pageList, pages, currentId, activePages)
+    ) {
+      this.pageList = pageList
       this.pages = pages
+      this.currentId = currentId
+      this.activePages = activePages
       this.setCurrentId = setCurrentId
-      this.direction = direction
+      this.setActivePage = setActivePage
+      this.isNested = isNested
+      this.myCursor = myCursor
     }
-    
-  getMoveCursor = (direction) => {
-    if (!this.currentId) {
-      const currentId = this.pageList.topLevelIds[0]
-      this.setCurrentId(currentId)
-      this.pages[currentId] && history.push(this.pages[currentId].url)
-    } else {
-      // const myCursor = new Cursor(pages, currentId, pageList, activePages)
-      let nextId = null
-      if (direction === 'up') {
-        nextId = super.getUpDirection()
-      } else if (direction === 'down') {
-        nextId = super.getDownDirection()
-      }
-      // const nextId = getNextId(pages, pageList, activePages, currentId, direction)
-      this.setCurrentId(nextId)
-      this.pages[nextId] && history.push(this.pages[nextId].url)
-    }
+  
+  setUrl = (id) => this.pages[id].url && history.push(this.pages[id].url)  
+
+  initiateCursor = () => {
+    const currentId = this.pageList.topLevelIds[0]
+    this.setCurrentId(currentId)
+    this.setUrl(currentId)
   }  
+    
+  getMoveCursorDown = () => {
+    if (!this.currentId) {
+      this.initiateCursor()
+    } else {      
+      const nextId = this.myCursor.getDownDirection()
+      this.setCurrentId(nextId)
+      this.setUrl(nextId)   
+    }
+  }
+
+  getMoveCursorUp = () => {
+    if (!this.currentId) {
+      this.initiateCursor()
+    } else {
+      const nextId = this.myCursor.getUpDirection()
+      this.setCurrentId(nextId)
+      this.setUrl(nextId)
+    }
+  }
+
+  getMoveCursorRight = () => {
+    if (this.currentId && this.isNested(this.currentId) && !this.activePages.includes(this.currentId)) {
+      const nextId = this.pages[this.currentId].pages[0]      
+      this.setActivePage(this.currentId)
+      this.setCurrentId(nextId)
+      this.setUrl(nextId)
+    }
+  }
+
+  getMoveCursorLeft = () => {
+    if (this.currentId && this.pages[this.currentId].level !== 0) {
+      const prevId = this.pages[this.currentId].parentId
+      batch(() => {
+        this.setActivePage(prevId)
+        this.setCurrentId(prevId)
+      })
+      this.setUrl(prevId)
+    } else if (this.currentId && this.activePages.includes(this.currentId)) {
+      batch(() => {
+        this.setActivePage(this.currentId)
+        this.setCurrentId(this.currentId)
+      })
+      this.setUrl(this.currentId)
+    }
+  }
 }
+
 
 
 // const getNextId = (pages, pageList, activePages, currentId, direction) => {
@@ -208,3 +232,37 @@ export class VerticalHandler extends Cursor {
 //       return currentId
 //     }
 //   }
+
+// /**
+// * @param {String} currentId
+// * @param {Object} [pageList=store.pages.pageList]
+// * @param {Array} [pages=pageList.entities.pages]
+// * @param {Array} activePages - state from Redux store
+// * @param {Function} setCurrentId - actionCreator from Redux reducer
+// * @param {String} direction ['up', 'down']
+// */
+// export function upDownKeysHandler(
+//   currentId,
+//   pageList,
+//   pages = pageList.entities.pages,
+//   activePages,
+//   setCurrentId,
+//   direction
+// ) {
+//   if (!currentId) {
+//     const currentId = pageList.topLevelIds[0]
+//     setCurrentId(currentId)
+//     pages[currentId] && history.push(pages[currentId].url)
+//   } else {
+//     const myCursor = new Cursor(pageList, pages, currentId,  activePages)
+//     let nextId = null
+//     if(direction === 'up'){
+//       nextId = myCursor.getUpDirection()
+//     } else if(direction === 'down') {
+//       nextId = myCursor.getDownDirection()
+//     }
+//     //const nextId = getNextId(pages, pageList, activePages, currentId, direction)
+//     setCurrentId(nextId)
+//     pages[nextId] && history.push(pages[nextId].url)
+//   }
+// }
