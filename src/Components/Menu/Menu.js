@@ -4,7 +4,7 @@ import classNames from "classnames"
 import Mousetrap from 'mousetrap'
 import {batch} from 'react-redux'
 import {Fragment, useCallback, useMemo, useState, useEffect} from 'react'
-import {getCoords, VerticalHandler} from 'utils'
+import {getCoords, arrowKeysHandler} from 'utils'
 import SearchFieldContainer from 'Components/SearchField'
 
 function List(props) {
@@ -21,12 +21,12 @@ function List(props) {
   const pages = pageList.entities.pages
   const isNested = useCallback((id) => pages[id].pages && pages[id].pages.length > 0, [pages])  
   const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])  
-  const onKeyDownVerticalHandler = useMemo(() => {
-    return new VerticalHandler(pageList, pages, currentId, activePages, setCurrentId, setActivePage, isNested)
+  const onKeyDownArrowKeysHandler = useMemo(() => {
+    return new arrowKeysHandler(pageList, pages, currentId, activePages, setCurrentId, setActivePage, isNested)
   }, [pageList, pages, currentId, activePages, setCurrentId, setActivePage,isNested])  
 
   Mousetrap.bind('down', () => {  
-    onKeyDownVerticalHandler.getMoveCursorDown()    
+    onKeyDownArrowKeysHandler.getMoveCursorDown()    
 
     const activeTopPosition = document.querySelector('.selected-link').getBoundingClientRect().top
     const menuHeight = document.querySelector('.menu-list__container').offsetHeight
@@ -39,9 +39,9 @@ function List(props) {
     }
 
   })
-  Mousetrap.bind('up', () => onKeyDownVerticalHandler.getMoveCursorUp())
-  Mousetrap.bind('right', () => onKeyDownVerticalHandler.getMoveCursorRight())
-  Mousetrap.bind('left', () => onKeyDownVerticalHandler.getMoveCursorLeft())
+  Mousetrap.bind('up', () => onKeyDownArrowKeysHandler.getMoveCursorUp())
+  Mousetrap.bind('right', () => onKeyDownArrowKeysHandler.getMoveCursorRight())
+  Mousetrap.bind('left', () => onKeyDownArrowKeysHandler.getMoveCursorLeft())
 
   return (
     <div className='menu'>
