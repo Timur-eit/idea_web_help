@@ -123,10 +123,10 @@ class Cursor {
 * @param {Function} setActivePage - actionCreator from Redux reducer
 * @param {Function} isNested - predicate foo from Menu.js
 */
-export class arrowKeysHandler {
+export class ArrowKeysHandler {
   constructor(
     pageList,
-    pages = pageList.entities.pages,
+    pages,
     currentId,
     activePages,
     setCurrentId,

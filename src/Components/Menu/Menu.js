@@ -4,7 +4,7 @@ import classNames from "classnames"
 import Mousetrap from 'mousetrap'
 import {batch} from 'react-redux'
 import {Fragment, useCallback, useMemo, useState, useEffect} from 'react'
-import {getCoords, arrowKeysHandler} from 'utils'
+import {getCoords, ArrowKeysHandler} from 'utils'
 import SearchFieldContainer from 'Components/SearchField'
 
 function List(props) {
@@ -22,7 +22,7 @@ function List(props) {
   const isNested = useCallback((id) => pages[id].pages && pages[id].pages.length > 0, [pages])  
   const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])  
   const onKeyDownArrowKeysHandler = useMemo(() => {
-    return new arrowKeysHandler(pageList, pages, currentId, activePages, setCurrentId, setActivePage, isNested)
+    return new ArrowKeysHandler(pageList, pages, currentId, activePages, setCurrentId, setActivePage, isNested)
   }, [pageList, pages, currentId, activePages, setCurrentId, setActivePage,isNested])  
 
   Mousetrap.bind('down', () => {  
