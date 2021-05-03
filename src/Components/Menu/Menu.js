@@ -4,7 +4,7 @@ import classNames from "classnames"
 import Mousetrap from 'mousetrap'
 import {batch} from 'react-redux'
 import {Fragment, useCallback, useMemo, useState, useEffect} from 'react'
-import {getCoords, ArrowKeysHandler} from 'utils'
+import {getCoords, ArrowKeysHandler, setMenuScrollHandler} from 'utils'
 import SearchFieldContainer from 'Components/SearchField'
 
 function List(props) {
@@ -19,27 +19,22 @@ function List(props) {
   } = props
 
   const pages = pageList.entities.pages
-  const isNested = useCallback((id) => pages[id].pages && pages[id].pages.length > 0, [pages])  
-  const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])  
+  const isNested = useCallback((id) => pages[id].pages && pages[id].pages.length > 0, [pages])
+  const elementDomParams = useMemo(() => currentId && getCoords(document.getElementById(currentId)), [currentId])
   const onKeyDownArrowKeysHandler = useMemo(() => {
     return new ArrowKeysHandler(pageList, pages, currentId, activePages, setCurrentId, setActivePage, isNested)
-  }, [pageList, pages, currentId, activePages, setCurrentId, setActivePage,isNested])  
+  }, [pageList, pages, currentId, activePages, setCurrentId, setActivePage,isNested])
 
-  Mousetrap.bind('down', () => {  
-    onKeyDownArrowKeysHandler.getMoveCursorDown()    
+  const setMenuScroll = useCallback(() => setMenuScrollHandler(setMenuScrollPosition), [setMenuScrollPosition])
 
-    const activeTopPosition = document.querySelector('.selected-link').getBoundingClientRect().top
-    const menuHeight = document.querySelector('.menu-list__container').offsetHeight
-    const currentMenuScrollPosition = document.querySelector('.menu-list__container').scrollTop
-
-    if(currentMenuScrollPosition > activeTopPosition){
-      setMenuScrollPosition(0)
-    } else if((menuHeight - activeTopPosition) < 40){
-      setMenuScrollPosition(currentMenuScrollPosition + 60)
-    }
-
+  Mousetrap.bind('down', () => {
+    onKeyDownArrowKeysHandler.getMoveCursorDown()
+    setMenuScroll()
   })
-  Mousetrap.bind('up', () => onKeyDownArrowKeysHandler.getMoveCursorUp())
+  Mousetrap.bind('up', () => {
+    onKeyDownArrowKeysHandler.getMoveCursorUp()
+    setMenuScroll()
+  })
   Mousetrap.bind('right', () => onKeyDownArrowKeysHandler.getMoveCursorRight())
   Mousetrap.bind('left', () => onKeyDownArrowKeysHandler.getMoveCursorLeft())
 

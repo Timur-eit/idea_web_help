@@ -223,7 +223,6 @@ export function setMenuScrollHandler(setScrollState) {
   if ((menuHeight - activeTopPosition) < 40 && (menuHeight - activeTopPosition) > 0) {
     setScrollState(currentMenuScrollPosition + 60)
   } else if ((menuHeight - activeTopPosition) < 0) {
-    // console.log('minus currentMenuScrollPosition')
     setScrollState(activeTopPosition + (menuHeight - activeTopPosition))
   } else if (menuHeight - (menuHeight - activeTopPosition) < 40) {
     setScrollState(currentMenuScrollPosition - 60)
