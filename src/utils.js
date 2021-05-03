@@ -99,24 +99,30 @@ class Cursor {
   getDownDirection = () => {
     if (this.activePages.includes(this.currentId)) {
       return this.pages[this.currentId].pages[0]
-    } else if (this.#currentIdIndex === this.#currentPageList.length - 1 && this.#parentIdIndex === this.#parentIdPageList.length - 1) {
+    } else if (this.#currentIdIndex === this.#currentPageList.length - 1 && this.#parentIdIndex === this.#parentIdPageList.length - 1 && this.pages[this.currentId].level !== 0) {
       const grandParentId = this.pages[this.pages[this.currentId].parentId].parentId
       const grandParentIdPageList = this.pages[grandParentId].level <= 1 ? this.pageList.topLevelIds : this.pages[this.pages[grandParentId].parentId].pages
       const grandParentIdIndex = grandParentId ? grandParentIdPageList.indexOf(grandParentId) : this.#currentIdIndex
       return grandParentIdPageList[grandParentIdIndex + 1]
     } else if (this.#currentIdIndex === this.#currentPageList.length - 1 && this.#parentId) {
-      return this.#parentIdPageList[this.#parentIdIndex + 1]   
+      return this.#parentIdPageList[this.#parentIdIndex + 1]
     } else {
       return (this.#currentIdIndex === this.#currentPageList.length - 1 ? this.#currentPageList[0] : this.#currentPageList[this.#currentIdIndex + 1])
     }
   }
 
   getUpDirection = () => {
+    const prevIdLastIndex = this.#prevId && this.pages[this.#prevId].pages ? this.pages[this.#prevId].pages.length - 1 : null
+    const prevIdLastChild = prevIdLastIndex ? this.pages[this.pages[this.#prevId].pages[prevIdLastIndex]] : null
+
     if (this.#currentIdIndex === 0 && this.#parentId) {
       return this.#parentIdPageList[this.#parentIdIndex]
+    } else if (prevIdLastChild && this.activePages.includes(prevIdLastChild.id)) {
+      console.log(prevIdLastIndex)
+      return this.pages[prevIdLastChild.id].pages[0]
     } else if (this.activePages.includes(this.#prevId)) {
-      const lastIndex = this.pages[this.#prevId].pages.length - 1
-      return this.pages[this.#prevId].pages[lastIndex]
+      // const lastIndex = this.pages[this.#prevId].pages.length - 1
+      return this.pages[this.#prevId].pages[prevIdLastIndex]
     } else {
       return (this.#currentIdIndex === 0 ? this.#currentPageList[this.#currentPageList.length - 1] : this.#prevId)
     }
