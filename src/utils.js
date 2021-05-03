@@ -93,14 +93,19 @@ class Cursor {
     this.#parentIdPageList = pages[currentId].level <= 1 ? pageList.topLevelIds : pages[pages[this.#parentId].parentId].pages
     this.#currentIdIndex = this.#currentPageList.indexOf(currentId)
     this.#parentIdIndex = this.#parentId ? this.#parentIdPageList.indexOf(this.#parentId) : this.#currentIdIndex
-    this.#prevId = this.#currentPageList[this.#currentIdIndex - 1]     
+    this.#prevId = this.#currentPageList[this.#currentIdIndex - 1]
   }
 
   getDownDirection = () => {
-    if (this.#currentIdIndex === this.#currentPageList.length - 1 && this.#parentId) {
-      return this.#parentIdPageList[this.#parentIdIndex + 1]
-    } else if (this.activePages.includes(this.currentId)) {
+    if (this.activePages.includes(this.currentId)) {
       return this.pages[this.currentId].pages[0]
+    } else if (this.#currentIdIndex === this.#currentPageList.length - 1 && this.#parentIdIndex === this.#parentIdPageList.length - 1) {
+      const grandParentId = this.pages[this.pages[this.currentId].parentId].parentId
+      const grandParentIdPageList = this.pages[grandParentId].level <= 1 ? this.pageList.topLevelIds : this.pages[this.pages[grandParentId].parentId].pages
+      const grandParentIdIndex = grandParentId ? grandParentIdPageList.indexOf(grandParentId) : this.#currentIdIndex
+      return grandParentIdPageList[grandParentIdIndex + 1]
+    } else if (this.#currentIdIndex === this.#currentPageList.length - 1 && this.#parentId) {
+      return this.#parentIdPageList[this.#parentIdIndex + 1]   
     } else {
       return (this.#currentIdIndex === this.#currentPageList.length - 1 ? this.#currentPageList[0] : this.#currentPageList[this.#currentIdIndex + 1])
     }
@@ -143,22 +148,22 @@ export class ArrowKeysHandler {
       this.isNested = isNested
       this.myCursor = myCursor
     }
-  
-  setUrl = (id) => this.pages[id].url && history.push(this.pages[id].url)  
+
+  setUrl = (id) => this.pages[id] && this.pages[id].url && history.push(this.pages[id].url)
 
   initiateCursor = () => {
     const currentId = this.pageList.topLevelIds[0]
     this.setCurrentId(currentId)
     this.setUrl(currentId)
-  }  
-    
+  }
+
   getMoveCursorDown = () => {
     if (!this.currentId) {
       this.initiateCursor()
-    } else {      
+    } else {
       const nextId = this.myCursor.getDownDirection()
       this.setCurrentId(nextId)
-      this.setUrl(nextId)   
+      this.setUrl(nextId)
     }
   }
 
@@ -174,7 +179,7 @@ export class ArrowKeysHandler {
 
   getMoveCursorRight = () => {
     if (this.currentId && this.isNested(this.currentId) && !this.activePages.includes(this.currentId)) {
-      const nextId = this.pages[this.currentId].pages[0]      
+      const nextId = this.pages[this.currentId].pages[0]
       this.setActivePage(this.currentId)
       this.setCurrentId(nextId)
       this.setUrl(nextId)
@@ -199,6 +204,26 @@ export class ArrowKeysHandler {
   }
 }
 
+export function setMenuScrollHandler(setScrollState) {
+  const activeTopPosition = document.querySelector('.selected-link').getBoundingClientRect().top
+  const menuHeight = document.querySelector('.menu-list__container').offsetHeight
+  const currentMenuScrollPosition = document.querySelector('.menu-list__container').scrollTop
+
+  console.log('activeTopPosition ' + activeTopPosition)
+  console.log('menuHeight ' + menuHeight)
+  console.log('currentMenuScrollPosition ' + currentMenuScrollPosition)
+  console.log('menuHeight - activeTopPosition ' + (menuHeight - activeTopPosition))
+
+  if ((menuHeight - activeTopPosition) < 40 && (menuHeight - activeTopPosition) > 0) {
+    setScrollState(currentMenuScrollPosition + 60)
+  } else if ((menuHeight - activeTopPosition) < 0) {
+    // console.log('minus currentMenuScrollPosition')
+    setScrollState(activeTopPosition + (menuHeight - activeTopPosition))
+  } else if (menuHeight - (menuHeight - activeTopPosition) < 40) {
+    setScrollState(currentMenuScrollPosition - 60)
+  }
+
+}
 
 
 // const getNextId = (pages, pageList, activePages, currentId, direction) => {
@@ -207,10 +232,10 @@ export class ArrowKeysHandler {
 //     const currentPageList = pages[currentId].level === 0 ? pageList.topLevelIds : pages[parentId].pages
 //     const parentIdPageList = pages[currentId].level <= 1 ? pageList.topLevelIds : pages[pages[parentId].parentId].pages
 //     const currentIdIndex = currentPageList.indexOf(currentId)
-//     const parentIdIndex = parentId ? parentIdPageList.indexOf(parentId) : currentIdIndex      
+//     const parentIdIndex = parentId ? parentIdPageList.indexOf(parentId) : currentIdIndex
 //     const prevId = currentPageList[currentIdIndex - 1]
-    
-//     if (direction === 'down') {        
+
+//     if (direction === 'down') {
 //       if (currentIdIndex === currentPageList.length - 1 && parentId) {
 //         return parentIdPageList[parentIdIndex + 1]
 //       } else if (activePages.includes(currentId)) {
@@ -218,7 +243,7 @@ export class ArrowKeysHandler {
 //       } else {
 //         return (currentIdIndex === currentPageList.length - 1 ? currentPageList[0] : currentPageList[currentIdIndex + 1])
 //       }
-//     } else if (direction === 'up') {        
+//     } else if (direction === 'up') {
 //       if (currentIdIndex === 0 && parentId) {
 //         return parentIdPageList[parentIdIndex]
 //       } else if (activePages.includes(prevId)) {
