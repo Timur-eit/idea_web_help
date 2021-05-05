@@ -6,7 +6,7 @@ import {batch} from 'react-redux'
 import {Fragment, useCallback, useMemo, useState, useEffect} from 'react'
 import {getCoords, ArrowKeysHandler, setMenuScrollHandler} from 'utils'
 import SearchFieldContainer from 'Components/SearchField'
-import { useSpring, animated } from 'react-spring'
+import { useSpring, animated, config } from 'react-spring'
 
 function List(props) {
   const {
@@ -41,11 +41,22 @@ function List(props) {
   Mousetrap.bind('right', () => onKeyDownArrowKeysHandler.getMoveCursorRight())
   Mousetrap.bind('left', () => onKeyDownArrowKeysHandler.getMoveCursorLeft())
 
+  useEffect(() => {
 
+  })
+
+  const [arrowPosition, setArrowPosition] = useState(0)
+
+  useEffect(() => {
+    if(clickedId.length > 0 && arrowPosition < 180){
+      setArrowPosition(arrowPosition + 20)
+    }
+
+  }, [clickedId.length, arrowPosition])
 
   const arrowStyleSpringProps = useSpring({
-    transform: clickedId.length > 0 ? 'rotate(-180deg)' : 'rotate(0deg)',
-    config: { duration: 500 },
+    transform: clickedId.length > 0 ? `rotate(-${arrowPosition}deg)` : `rotate(0deg)`,
+    config: config.default,
   })
 
   return (
