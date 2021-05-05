@@ -41,10 +41,6 @@ function List(props) {
   Mousetrap.bind('right', () => onKeyDownArrowKeysHandler.getMoveCursorRight())
   Mousetrap.bind('left', () => onKeyDownArrowKeysHandler.getMoveCursorLeft())
 
-  useEffect(() => {
-
-  })
-
   const [arrowPosition, setArrowPosition] = useState(0)
 
   useEffect(() => {
@@ -54,11 +50,6 @@ function List(props) {
 
   }, [clickedId.length, arrowPosition])
 
-  const arrowStyleSpringProps = useSpring({
-    transform: clickedId.length > 0 ? `rotate(-${arrowPosition}deg)` : `rotate(0deg)`,
-    config: config.default,
-  })
-
   return (
     <div className='menu'>
       {topLevelIds.map((id) => {
@@ -67,7 +58,7 @@ function List(props) {
         const arrowClasses = classNames({
           'disclose-arrow': true,
           'hidden': !isNested(id),
-          // 'rotated': activePages.includes(id)
+          'rotated': activePages.includes(id)
         })
 
         const linkClasses = classNames({
@@ -93,7 +84,7 @@ function List(props) {
 
               console.log(clickedId)
             }}>
-              <animated.div className={arrowClasses} style={clickedId.includes(id) ? arrowStyleSpringProps : null}></animated.div>
+              <div className={arrowClasses} style={clickedId[clickedId.length -1] === id ? {transform: `rotate(-${arrowPosition}deg)`} : null}></div>
               {pages[id].title}
             </Link>
 
