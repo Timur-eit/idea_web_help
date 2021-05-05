@@ -6,6 +6,7 @@ import {batch} from 'react-redux'
 import {Fragment, useCallback, useMemo, useState, useEffect} from 'react'
 import {getCoords, ArrowKeysHandler, setMenuScrollHandler} from 'utils'
 import SearchFieldContainer from 'Components/SearchField'
+import { useSpring, animated, config } from 'react-spring'
 
 function List(props) {
   const {
@@ -37,6 +38,19 @@ function List(props) {
   })
   Mousetrap.bind('right', () => onKeyDownArrowKeysHandler.getMoveCursorRight())
   Mousetrap.bind('left', () => onKeyDownArrowKeysHandler.getMoveCursorLeft())
+
+  const [flip, setFlip] = useState(!topLevelIds.includes(currentId))
+
+  const springProps = useSpring({
+    from: { color: flip ? 'transparent' : 'inherit', backgroundColor: flip ? '#ccc' : 'inherit' },
+    to: { color: 'inherit', backgroundColor: 'inherit' },
+    reset: false,
+    loop: false,
+    reverse: false,
+    delay: 300,
+    config: config.molasses,
+    onRest: () => setFlip(true),
+  })
 
   return (
     <div className='menu'>
@@ -70,7 +84,7 @@ function List(props) {
               })
             }}>
               <div className={arrowClasses} style={{'left': `-1em`}}></div>
-              {pages[id].title}
+              <animated.span style={springProps}>{pages[id].title}</animated.span>
             </Link>
 
             {isNested(id) && activePages.includes(id) && <div className='submenu'>
