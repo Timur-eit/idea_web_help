@@ -11,6 +11,7 @@ const prefix = moduleName
 export const INIT_PAGE_LIST = `${prefix}/INIT_PAGE_LIST`
 export const SET_ACTIVE_PAGE = `${prefix}/SET_ACTIVE_PAGE`
 export const SET_CURRENT_LINK = `${prefix}/SET_CURRENT_LINK`
+export const SET_CLICKED_ID = `${prefix}/SET_CLICKED_ID`
 
 /**
  * Reducer
@@ -20,6 +21,7 @@ export const ReducerRecord = {
   pageList: data,
   activePages: [],
   currentId: null,
+  clickedId: []
 }
 
 export default function reducer(state = ReducerRecord, action) {
@@ -37,6 +39,10 @@ export default function reducer(state = ReducerRecord, action) {
     case SET_CURRENT_LINK:
       return Object.assign({}, state, {
         currentId: payload
+      })
+    case SET_CLICKED_ID:
+      return Object.assign({}, state, {
+        clickedId: payload
       })
     default:
       return state
@@ -57,6 +63,7 @@ export const routerPageSelector = createSelector(state => state, state => {
   const page = state[moduleName].pageList.entities.pages[id]
   return (page && page['anchors']) || []
 })
+export const clickedIdSelector = createSelector(stateSelector, state => state.clickedId)
 
 /**
  * Action Creator
@@ -86,6 +93,23 @@ export function setCurrentId(id) {
     dispatch({
       type: SET_CURRENT_LINK,
       payload: id
+    })
+  }
+}
+
+export function setClickedId(id) {
+  return (dispatch, getState) => {
+    // const clickedId = clickedIdSelector(getState())
+    const { clickedId } = getState()[moduleName]
+    let newClickedId = []
+    if (clickedId.includes(id)) {
+      newClickedId = [...clickedId].filter(x => x !== id)
+    } else {
+      newClickedId = [...clickedId, id]
+    }
+    dispatch({
+      type: SET_CLICKED_ID,
+      payload: newClickedId
     })
   }
 }

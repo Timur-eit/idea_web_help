@@ -10,6 +10,9 @@ import {
   currentIdSelector,
   setCurrentId,
 
+  clickedIdSelector,
+  setClickedId,
+
 } from 'modules/pages'
 
 export default connect(state => ({
@@ -17,7 +20,10 @@ export default connect(state => ({
   activePages: activePagesSelector(state),
   topLevelIds: topLevelIdsSelector(state),
   currentId: currentIdSelector(state),
+  clickedId: clickedIdSelector(state)
+
 }), {
   setActivePage,
   setCurrentId,
+  setClickedId,
 })(Menu)

@@ -17,8 +17,8 @@ function List(props) {
     setActivePage,
     setCurrentId,
     currentId,
-    setClickedIdHandler,
-    clickedId
+    clickedId,
+    setClickedId,
   } = props
 
   const pages = pageList.entities.pages
@@ -41,8 +41,10 @@ function List(props) {
   Mousetrap.bind('right', () => onKeyDownArrowKeysHandler.getMoveCursorRight())
   Mousetrap.bind('left', () => onKeyDownArrowKeysHandler.getMoveCursorLeft())
 
+
+
   const arrowStyleSpringProps = useSpring({
-    transform: activePages.includes(clickedId) ? 'rotate(-180deg)' : 'rotate(0deg)',
+    transform: clickedId.length > 0 ? 'rotate(-180deg)' : 'rotate(0deg)',
     config: { duration: 500 },
   })
 
@@ -67,8 +69,6 @@ function List(props) {
           'active': currentId && currentId === id
         })
 
-
-
         return (
           <Fragment key={id}>
             <div className={linkBgClasses} style={{height: elementDomParams ? elementDomParams.height : 0}}></div>
@@ -77,15 +77,12 @@ function List(props) {
               batch(() => {
                 setCurrentId(id)
                 isNested(id) && setActivePage(id)
+                setClickedId(id)
               })
 
-              // console.log(currentId)
-              // console.log('click id ' + id)
-              setClickedIdHandler(id)
-              // ! ???
               console.log(clickedId)
             }}>
-              <animated.div className={arrowClasses} style={arrowStyleSpringProps}></animated.div>
+              <animated.div className={arrowClasses} style={clickedId.includes(id) ? arrowStyleSpringProps : null}></animated.div>
               {pages[id].title}
             </Link>
 
@@ -98,9 +95,8 @@ function List(props) {
                 setActivePage={setActivePage}
                 setCurrentId={setCurrentId}
                 currentId={currentId}
-                setClickedIdHandler={setClickedIdHandler}
                 clickedId={clickedId}
-
+                setClickedId={setClickedId}
               />
             </div>
             }
@@ -117,20 +113,10 @@ function Menu({
                 setActivePage,
                 setCurrentId,
                 currentId,
-
+                clickedId,
+                setClickedId,
               }) {
   const [menuScrollPosition, setMenuScrollPosition] = useState(0)
-
-  const [clickedId, setClickedId] = useState([])
-  function setClickedIdHandler(id) {
-    setClickedId(() => {
-        if (!clickedId.includes(id)) {
-          return [...clickedId, id]
-        } else {
-          return clickedId.filter(x => x !== id)
-      }
-    })
-  }
 
   useEffect(() => {
     document.querySelector('.menu-list__container').scrollTop = menuScrollPosition
@@ -147,9 +133,8 @@ function Menu({
             setCurrentId={setCurrentId}
             currentId={currentId}
             setMenuScrollPosition={setMenuScrollPosition}
-            setClickedIdHandler={setClickedIdHandler}
             clickedId={clickedId}
-
+            setClickedId={setClickedId}
       />
     </div>
   )
