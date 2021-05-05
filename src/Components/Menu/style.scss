@@ -53,7 +53,8 @@
   // margin-right: 4px;
   // z-index: 9;
   position: absolute;
-  left: -1px;
+  // left: -1px;
+  left: -1em;
 
   &.rotated {
     transform: rotate(-180deg);

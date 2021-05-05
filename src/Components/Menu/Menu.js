@@ -6,6 +6,7 @@ import {batch} from 'react-redux'
 import {Fragment, useCallback, useMemo, useState, useEffect} from 'react'
 import {getCoords, ArrowKeysHandler, setMenuScrollHandler} from 'utils'
 import SearchFieldContainer from 'Components/SearchField'
+import { useSpring, animated } from 'react-spring'
 
 function List(props) {
   const {
@@ -16,6 +17,8 @@ function List(props) {
     setActivePage,
     setCurrentId,
     currentId,
+    setClickedIdHandler,
+    clickedId
   } = props
 
   const pages = pageList.entities.pages
@@ -38,6 +41,11 @@ function List(props) {
   Mousetrap.bind('right', () => onKeyDownArrowKeysHandler.getMoveCursorRight())
   Mousetrap.bind('left', () => onKeyDownArrowKeysHandler.getMoveCursorLeft())
 
+  const arrowStyleSpringProps = useSpring({
+    transform: activePages.includes(clickedId) ? 'rotate(-180deg)' : 'rotate(0deg)',
+    config: { duration: 500 },
+  })
+
   return (
     <div className='menu'>
       {topLevelIds.map((id) => {
@@ -46,11 +54,11 @@ function List(props) {
         const arrowClasses = classNames({
           'disclose-arrow': true,
           'hidden': !isNested(id),
-          'rotated': activePages.includes(id)
+          // 'rotated': activePages.includes(id)
         })
 
         const linkClasses = classNames({
-          'nested-link': pages[id].level > 0 && !isNested(id),
+          'nested-link': !isNested(id),
           'selected-link': currentId && currentId === id
         })
 
@@ -58,6 +66,8 @@ function List(props) {
           'link-background': true,
           'active': currentId && currentId === id
         })
+
+
 
         return (
           <Fragment key={id}>
@@ -68,8 +78,14 @@ function List(props) {
                 setCurrentId(id)
                 isNested(id) && setActivePage(id)
               })
+
+              // console.log(currentId)
+              // console.log('click id ' + id)
+              setClickedIdHandler(id)
+              // ! ???
+              console.log(clickedId)
             }}>
-              <div className={arrowClasses} style={{'left': `-1em`}}></div>
+              <animated.div className={arrowClasses} style={arrowStyleSpringProps}></animated.div>
               {pages[id].title}
             </Link>
 
@@ -82,6 +98,9 @@ function List(props) {
                 setActivePage={setActivePage}
                 setCurrentId={setCurrentId}
                 currentId={currentId}
+                setClickedIdHandler={setClickedIdHandler}
+                clickedId={clickedId}
+
               />
             </div>
             }
@@ -91,7 +110,6 @@ function List(props) {
   )
 }
 
-
 function Menu({
                 activePages,
                 pageList,
@@ -99,8 +117,20 @@ function Menu({
                 setActivePage,
                 setCurrentId,
                 currentId,
+
               }) {
   const [menuScrollPosition, setMenuScrollPosition] = useState(0)
+
+  const [clickedId, setClickedId] = useState([])
+  function setClickedIdHandler(id) {
+    setClickedId(() => {
+        if (!clickedId.includes(id)) {
+          return [...clickedId, id]
+        } else {
+          return clickedId.filter(x => x !== id)
+      }
+    })
+  }
 
   useEffect(() => {
     document.querySelector('.menu-list__container').scrollTop = menuScrollPosition
@@ -117,6 +147,9 @@ function Menu({
             setCurrentId={setCurrentId}
             currentId={currentId}
             setMenuScrollPosition={setMenuScrollPosition}
+            setClickedIdHandler={setClickedIdHandler}
+            clickedId={clickedId}
+
       />
     </div>
   )

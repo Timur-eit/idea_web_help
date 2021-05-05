@@ -1,5 +1,6 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {Link} from 'react-router-dom'
+import { useSpring, animated, config } from 'react-spring'
 import './style.scss'
 
 function Content({
@@ -12,11 +13,25 @@ function Content({
 
   const anchors = pageList.entities.anchors
   // const currentIdAnchors = routerPage
-    
+  // const props = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } })
+
+  const [flip, set] = useState(false)
+  const props = useSpring({
+    to: { opacity: 1 },
+    from: { opacity: 0 },
+    reset: true,
+    reverse: flip,
+    delay: 200,
+    config: config.molasses,
+    onRest: () => set(!flip),
+  })
+
+
   return (
     <div className='content__container'>
+    {/* <animated.div style={props}>I will fade in</animated.div> */}
       <div className='content'>
-        <h1>Web-Help Visual Guidelines</h1>
+        <animated.h1 style={props}>Web-Help Visual Guidelines</animated.h1>
         {routerPage && currentId
         ? routerPage.map(anchorId => {
           const url = anchors[anchorId].url
