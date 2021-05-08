@@ -19,7 +19,7 @@ function Content({
   const props = useSpring({
     to: { opacity: 1 },
     from: { opacity: 0 },
-    reset: true,
+    // reset: true,
     reverse: flip,
     delay: 200,
     config: config.molasses,

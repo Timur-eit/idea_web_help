@@ -21,7 +21,7 @@ export const ReducerRecord = {
   pageList: data,
   activePages: [],
   currentId: null,
-  clickedId: []
+  clickedId: {}
 }
 
 export default function reducer(state = ReducerRecord, action) {
@@ -97,16 +97,28 @@ export function setCurrentId(id) {
   }
 }
 
-export function setClickedId(id) {
+export function setClickedId(id, pages) {
   return (dispatch, getState) => {
     // const clickedId = clickedIdSelector(getState())
+    // const { clickedId } = getState()[moduleName]
+    // let newClickedId = []
+    // if (clickedId.includes(id)) {
+    //   newClickedId = [...clickedId].filter(x => x !== id)
+    // } else {
+    //   newClickedId = [...clickedId, id]
+    // }
+
     const { clickedId } = getState()[moduleName]
-    let newClickedId = []
-    if (clickedId.includes(id)) {
-      newClickedId = [...clickedId].filter(x => x !== id)
+    let newClickedId = {...clickedId}
+    if (newClickedId[id] === 'open') {
+      newClickedId[id] = 'close'
     } else {
-      newClickedId = [...clickedId, id]
+      if (pages[id].pages) {
+        newClickedId = {...clickedId, [id]: 'open'}
+      }
+      
     }
+
     dispatch({
       type: SET_CLICKED_ID,
       payload: newClickedId

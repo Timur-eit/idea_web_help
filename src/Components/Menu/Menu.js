@@ -6,7 +6,7 @@ import {batch} from 'react-redux'
 import {Fragment, useCallback, useMemo, useState, useEffect} from 'react'
 import {getCoords, ArrowKeysHandler, setMenuScrollHandler} from 'utils'
 import SearchFieldContainer from 'Components/SearchField'
-import { useSpring, animated } from 'react-spring'
+import { useSpring, animated, config } from 'react-spring'
 
 function List(props) {
   const {
@@ -41,11 +41,33 @@ function List(props) {
   Mousetrap.bind('right', () => onKeyDownArrowKeysHandler.getMoveCursorRight())
   Mousetrap.bind('left', () => onKeyDownArrowKeysHandler.getMoveCursorLeft())
 
-
-
+  // const [isOpen, setOpen] = useState({})
+  
+  // function setOpenHandler(id, isOpen) {
+  //   if (isOpen.hasOwnProperty(id)) {
+  //     setOpen(() => ({...isOpen, id: 'isOpen'}))
+  //   } else {
+  //     const newIsOpen = {...isOpen}
+  //     newIsOpen[id] = 'close'
+  //     setOpen(() => newIsOpen)
+  //   }
+  // }
+  
+  const isOpen = (id) => clickedId[id] === 'open'
+ 
   const arrowStyleSpringProps = useSpring({
-    transform: clickedId.length > 0 ? 'rotate(-180deg)' : 'rotate(0deg)',
+    // transform: clickedId.length > 0 ? 'rotate(-180deg)' : 'rotate(0deg)',
+    // transform: clickedId.length > 0 ? 'rotate(-180deg)' : 'rotate(0deg)',
+    // reset: true,
+    // config: { duration: 500 },
+    // delay: 1000,
+    
+    from: { rotate: isOpen(currentId) ? 0 : -180 },
+    to: { rotate: isOpen(currentId) ? -180 : 0 },
+
+    // reset: true,
     config: { duration: 500 },
+    // config: config.molasses,
   })
 
   return (
@@ -77,12 +99,13 @@ function List(props) {
               batch(() => {
                 setCurrentId(id)
                 isNested(id) && setActivePage(id)
-                setClickedId(id)
+                setClickedId(id, pages)
               })
 
               console.log(clickedId)
+              
             }}>
-              <animated.div className={arrowClasses} style={clickedId.includes(id) ? arrowStyleSpringProps : null}></animated.div>
+              <animated.div className={arrowClasses} style={arrowStyleSpringProps}></animated.div>
               {pages[id].title}
             </Link>
 
