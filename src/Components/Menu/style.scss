@@ -24,6 +24,7 @@
     font-size: 12px;
     margin-bottom: 0.2em;
     position:relative;
+    
     // box-sizing: border-box;
     
     // word-wrap: break-word;
@@ -77,6 +78,7 @@
   background-color: rgba(0,0,0, 0.1);
   left: 0;
   display: none;
+
 
   &.active {
     display: block;

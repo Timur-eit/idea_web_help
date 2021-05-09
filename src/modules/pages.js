@@ -113,3 +113,12 @@ export function setClickedId(id) {
     })
   }
 }
+
+export function getSearchedData() {
+  return (dispatch, getState) => {
+    const { searchField } = getState()['form']
+    const searchValue = searchField.values
+    console.log(searchValue)
+
+  }
+}

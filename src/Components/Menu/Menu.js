@@ -6,7 +6,7 @@ import {batch} from 'react-redux'
 import {Fragment, useCallback, useMemo, useState, useEffect} from 'react'
 import {getCoords, ArrowKeysHandler, setMenuScrollHandler} from 'utils'
 import SearchFieldContainer from 'Components/SearchField'
-import { useSpring, animated, config } from 'react-spring'
+// import { useSpring, animated, config } from 'react-spring'
 
 function List(props) {
   const {
