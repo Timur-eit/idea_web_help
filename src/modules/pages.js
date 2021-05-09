@@ -12,6 +12,9 @@ export const INIT_PAGE_LIST = `${prefix}/INIT_PAGE_LIST`
 export const SET_ACTIVE_PAGE = `${prefix}/SET_ACTIVE_PAGE`
 export const SET_CURRENT_LINK = `${prefix}/SET_CURRENT_LINK`
 export const SET_CLICKED_ID = `${prefix}/SET_CLICKED_ID`
+export const GET_SEARCH_RESULTS = `${prefix}/GET_SEARCH_RESULTS`
+export const LOADER_ON = `${prefix}/LOADER_ON`
+export const LOADER_OFF = `${prefix}/LOADER_OFF`
 
 /**
  * Reducer
@@ -19,6 +22,8 @@ export const SET_CLICKED_ID = `${prefix}/SET_CLICKED_ID`
 
 export const ReducerRecord = {
   pageList: data,
+  isLoader: data,
+  searchData: null,
   activePages: [],
   currentId: null,
   clickedId: []
@@ -44,6 +49,15 @@ export default function reducer(state = ReducerRecord, action) {
       return Object.assign({}, state, {
         clickedId: payload
       })
+    case GET_SEARCH_RESULTS:
+      return Object.assign({}, state, {
+        searchData: payload
+      })
+    case LOADER_ON:
+    case LOADER_OFF:
+      return Object.assign({}, state, {
+        isLoader: payload
+      })
     default:
       return state
   }
@@ -54,10 +68,24 @@ export default function reducer(state = ReducerRecord, action) {
  * */
 
 export const stateSelector = state => state[moduleName]
-export const pageListSelector = createSelector(stateSelector, state => state.pageList) // TODO: make filter here
+export const pageListSelector = createSelector(stateSelector, state => state.pageList)
 export const topLevelIdsSelector = createSelector(stateSelector, state => (state.pageList && state.pageList.topLevelIds) || [])
-export const activePagesSelector = createSelector(stateSelector, state => state.activePages)
-export const currentIdSelector = createSelector(stateSelector, state => state.currentId)
+export const activePagesSelector = createSelector(stateSelector, state => {
+  if(state.searchData) {
+    return [state.searchData.id]
+  } else {
+    return state.activePages
+  }
+
+})
+export const currentIdSelector = createSelector(stateSelector, state => {
+
+  if(state.searchData) {
+    return state.searchData.id
+  } else {
+    return state.currentId
+  }
+})
 export const routerPageSelector = createSelector(state => state, state => {
   const id = state[moduleName].currentId
   const page = state[moduleName].pageList.entities.pages[id]
@@ -73,6 +101,30 @@ export const clickedIdSelector = createSelector(stateSelector, state => state.cl
 //   type: SET_ACTIVE_PAGE,
 //   payload: pageId
 // })
+
+export function filterData(queryString) {
+  return (dispatch, getState) => {
+    dispatch ({
+      type: LOADER_ON,
+      payload: data
+    })
+
+    fetch(`http://localhost:4000/?search=${queryString}`)
+      .then(res => res.json())
+      .then(data => {
+        dispatch ({
+            type: GET_SEARCH_RESULTS,
+          payload: data
+        })
+      }).finally(() => {
+      dispatch ({
+        type: LOADER_OFF,
+        payload: data
+      })
+    })
+  }
+}
+
 
 export function setActivePage(pageId) {
   return (dispatch, getState) => {
