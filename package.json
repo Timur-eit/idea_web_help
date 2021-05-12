@@ -1,59 +1,70 @@
 {
-  "name": "idea_web_help",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "classnames": "^2.3.1",
-    "connected-react-router": "^6.9.1",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "history": "^4.10.1",
-    "lodash": "^4.17.21",
-    "mousetrap": "^1.6.5",
-    "node-sass": "^5.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-redux": "^7.2.3",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
-    "react-spring": "^9.1.2",
-    "react-virtualized": "^9.22.3",
-    "redux": "^4.0.5",
-    "redux-form": "^8.3.7",
-    "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0",
-    "reselect": "^4.0.0",
-    "sass-loader": "^11.0.1",
-    "web-vitals": "^1.0.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "optionalDependencies": {
-    "fsevents": "^2.3.2"
-  }
+    "name": "idea_web_help",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@testing-library/jest-dom": "^5.11.4",
+        "@testing-library/react": "^11.1.0",
+        "@testing-library/user-event": "^12.1.10",
+        "classnames": "^2.3.1",
+        "connected-react-router": "^6.9.1",
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "history": "^4.10.1",
+        "lodash": "^4.17.21",
+        "mousetrap": "^1.6.5",
+        "node-sass": "^5.0.0",
+        "prettier": "^2.3.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-redux": "^7.2.3",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "^4.0.3",
+        "react-spring": "^9.1.2",
+        "react-virtualized": "^9.22.3",
+        "redux": "^4.0.5",
+        "redux-form": "^8.3.7",
+        "redux-logger": "^3.0.6",
+        "redux-thunk": "^2.3.0",
+        "reselect": "^4.0.0",
+        "sass-loader": "^11.0.1",
+        "web-vitals": "^1.0.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "lint": "eslint ./src/**/*.js --fix",
+        "format": "prettier --write ."
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ],
+        "rules": {
+            "no-console": "warn",
+            "semi": "off",
+            "linebreak-style": [
+                "warn",
+                "unix"
+            ]
+        }
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "optionalDependencies": {
+        "fsevents": "^2.3.2"
+    }
 }
