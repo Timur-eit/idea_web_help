@@ -5,47 +5,18 @@ import './style.scss'
 import _ from 'lodash'
 
 let SearchField = ({
-    filterData,
-    getSearchedData,
     pageList,
-    activePages,
-    topLevelIds,
-    setActivePage,
-    setCurrentId,
+    setFoundId
 }) => {
-    const pages = pageList.entities.pages
-
+    
     function searchHandler(e) {
         const { value } = e.target
-
-        // if (activePages.length > 0) {
-        //   for (const pageId of activePages) {
-        //     if (pages[pageId].title.includes(value)) {
-        //       matches.push(pages[pageId].title)
-        //     }
-        //     if (pages[pageId].pages) {
-        //       for (const subPageId of pages[pageId].pages) {
-        //         if (pages[subPageId].title.includes(value)) {
-        //           matches.push(pages[subPageId].title)
-        //         }
-        //       }
-        //
-        //     }
-        //   }
-        // } else {
-        //   for (const pageId of topLevelIds) {
-        //     if (pages[pageId].title.includes(value)) {
-        //       matches.push(pages[pageId].title)
-        //     }
-        //   }
-        // }
-        // filterData(value)
 
         fetch(`http://localhost:4000/?search=${value}`)
             .then((res) => res.json())
             .then((data) => {
                 console.log(data)
-                // setCurrentId(data.id)
+                setFoundId(data)
             })
     }
 

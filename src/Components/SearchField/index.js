@@ -4,12 +4,9 @@ import { withRouter } from 'react-router'
 
 import {
     pageListSelector,
-    filterData,
-    setActivePage,
     activePagesSelector,
-    getSearchedData,
     topLevelIdsSelector,
-    setCurrentId,
+    setFoundId
 } from 'modules/pages'
 
 let SearchFieldContainer = connect(
@@ -18,11 +15,8 @@ let SearchFieldContainer = connect(
         activePages: activePagesSelector(state),
         topLevelIds: topLevelIdsSelector(state),
     }),
-    {
-        filterData,
-        setActivePage,
-        getSearchedData,
-        setCurrentId,
+    {  
+        setFoundId,
     }
 )(SearchField)
 

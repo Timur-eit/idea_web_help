@@ -12,9 +12,8 @@ export const INIT_PAGE_LIST = `${prefix}/INIT_PAGE_LIST`
 export const SET_ACTIVE_PAGE = `${prefix}/SET_ACTIVE_PAGE`
 export const SET_CURRENT_LINK = `${prefix}/SET_CURRENT_LINK`
 export const SET_CLICKED_ID = `${prefix}/SET_CLICKED_ID`
-export const GET_SEARCH_RESULTS = `${prefix}/GET_SEARCH_RESULTS`
-export const LOADER_ON = `${prefix}/LOADER_ON`
-export const LOADER_OFF = `${prefix}/LOADER_OFF`
+export const SET_FOUND_ID = `${prefix}/SET_FOUND_ID`
+
 
 /**
  * Reducer
@@ -22,11 +21,10 @@ export const LOADER_OFF = `${prefix}/LOADER_OFF`
 
 export const ReducerRecord = {
     pageList: data,
-    isLoader: data,
-    searchData: null,
     activePages: [],
     currentId: null,
     clickedId: [],
+    foundId: [],
 }
 
 export default function reducer(state = ReducerRecord, action) {
@@ -49,14 +47,9 @@ export default function reducer(state = ReducerRecord, action) {
             return Object.assign({}, state, {
                 clickedId: payload,
             })
-        case GET_SEARCH_RESULTS:
+        case SET_FOUND_ID:
             return Object.assign({}, state, {
-                searchData: payload,
-            })
-        case LOADER_ON:
-        case LOADER_OFF:
-            return Object.assign({}, state, {
-                isLoader: payload,
+                foundId: payload,
             })
         default:
             return state
@@ -68,7 +61,7 @@ export default function reducer(state = ReducerRecord, action) {
  * */
 
 export const stateSelector = (state) => state[moduleName]
-export const pageListSelector = createSelector(stateSelector, (state) => state.pageList) // TODO: make filter here
+export const pageListSelector = createSelector(stateSelector, (state) => state.pageList)
 export const topLevelIdsSelector = createSelector(
     stateSelector,
     (state) => (state.pageList && state.pageList.topLevelIds) || []
@@ -84,39 +77,11 @@ export const routerPageSelector = createSelector(
     }
 )
 export const clickedIdSelector = createSelector(stateSelector, (state) => state.clickedId)
+export const foundIdSelector = createSelector(stateSelector, (state) => state.foundId)
 
 /**
  * Action Creator
  * */
-
-//  export const setActivePage = pageId => ({
-//   type: SET_ACTIVE_PAGE,
-//   payload: pageId
-// })
-
-export function filterData(queryString) {
-    return (dispatch, getState) => {
-        dispatch({
-            type: LOADER_ON,
-            payload: data,
-        })
-
-        fetch(`http://localhost:3000/?search=${queryString}`)
-            .then((res) => res.json())
-            .then((data) => {
-                dispatch({
-                    type: GET_SEARCH_RESULTS,
-                    payload: data,
-                })
-            })
-            .finally(() => {
-                dispatch({
-                    type: LOADER_OFF,
-                    payload: data,
-                })
-            })
-    }
-}
 
 export function setActivePage(pageId) {
     return (dispatch, getState) => {
@@ -134,8 +99,6 @@ export function setActivePage(pageId) {
 
 export function setCurrentId(id) {
     return (dispatch) => {
-        // const url = event.target.href
-
         dispatch({
             type: SET_CURRENT_LINK,
             payload: id,
@@ -160,10 +123,12 @@ export function setClickedId(id) {
     }
 }
 
-export function getSearchedData() {
+export function setFoundId(listOfId) {
     return (dispatch, getState) => {
-        const { searchField } = getState()['form']
-        const searchValue = searchField.values
-        console.log(searchValue)
+        const ids = Object.keys(listOfId)
+        dispatch({
+            type: SET_FOUND_ID,
+            payload: ids,
+        })
     }
 }

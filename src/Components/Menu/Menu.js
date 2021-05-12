@@ -6,7 +6,6 @@ import { batch } from 'react-redux'
 import { Fragment, useCallback, useMemo, useState, useEffect } from 'react'
 import { getCoords, ArrowKeysHandler, setMenuScrollHandler } from 'utils'
 import SearchFieldContainer from 'Components/SearchField'
-// import { useSpring, animated, config } from 'react-spring'
 
 function List(props) {
     const {
@@ -19,6 +18,8 @@ function List(props) {
         currentId,
         clickedId,
         setClickedId,
+        foundId,
+        setFoundId
     } = props
 
     const pages = pageList.entities.pages
@@ -56,12 +57,46 @@ function List(props) {
     Mousetrap.bind('left', () => onKeyDownArrowKeysHandler.getMoveCursorLeft())
 
     const [arrowPosition, setArrowPosition] = useState(0)
+    // const [highlightId, setHighlight] = useState([])
+
+    // const setHighlightHandler = useCallback((id) => {
+    //     const newHighlightId = [...highlightId, id]
+    //     setHighlight(() => newHighlightId)
+    // }, [highlightId, setHighlight])
 
     useEffect(() => {
         if (clickedId.length > 0 && arrowPosition < 180) {
             setArrowPosition(arrowPosition + 20)
         }
-    }, [clickedId.length, arrowPosition])
+
+        if (foundId.length > 0) {
+            console.log('xxx')
+            
+            foundId.forEach(id => {
+                if (pages[id].parentId === undefined) {
+                    setClickedId(pages[id])
+                } else {
+                    // setHighlightHandler(id)
+                    console.log('lll')
+                    const depth = pages[id].level
+                    console.log(depth)
+
+                    let currentId = pages[id]
+                    for (let i = depth; i >= 0; i--) {
+                        const parentId = currentId.parentId
+                        setActivePage(parentId)
+                        setClickedId(parentId)
+                        currentId = pages[parentId]
+                    }
+                }
+            })
+        } else if (foundId.length === 0 && clickedId.length === 0) {
+            // setClickedId('')
+
+        }
+    }, [clickedId.length, arrowPosition, foundId, pages, setActivePage, setClickedId])
+
+    console.log(foundId)
 
     return (
         <div className="menu">
@@ -70,8 +105,8 @@ function List(props) {
 
                 const arrowClasses = classNames({
                     'disclose-arrow': true,
-                    hidden: !isNested(id),
-                    rotated: activePages.includes(id),
+                    'hidden': !isNested(id),
+                    'rotated': activePages.includes(id),
                 })
 
                 const linkClasses = classNames({
@@ -81,7 +116,8 @@ function List(props) {
 
                 const linkBgClasses = classNames({
                     'link-background': true,
-                    active: currentId && currentId === id,
+                    'active': currentId && currentId === id,
+                    'highlighted': foundId.includes(id)
                 })
 
                 return (
@@ -102,9 +138,10 @@ function List(props) {
                                     setCurrentId(id)
                                     isNested(id) && setActivePage(id)
                                     setClickedId(id)
+                                    setFoundId({})
                                 })
 
-                                console.log(clickedId)
+                                // console.log(clickedId)
                             }}
                         >
                             <div
@@ -132,6 +169,8 @@ function List(props) {
                                     currentId={currentId}
                                     clickedId={clickedId}
                                     setClickedId={setClickedId}
+                                    foundId={foundId}
+                                    setFoundId={setFoundId}
                                 />
                             </div>
                         )}
@@ -151,12 +190,16 @@ function Menu({
     currentId,
     clickedId,
     setClickedId,
+    foundId,
+    setFoundId
 }) {
     const [menuScrollPosition, setMenuScrollPosition] = useState(0)
 
     useEffect(() => {
         document.querySelector('.menu-list__container').scrollTop = menuScrollPosition
     }, [menuScrollPosition])
+
+    // console.log(foundId)
 
     return (
         <div className="menu-list__container">
@@ -172,6 +215,8 @@ function Menu({
                 setMenuScrollPosition={setMenuScrollPosition}
                 clickedId={clickedId}
                 setClickedId={setClickedId}
+                foundId={foundId}
+                setFoundId={setFoundId}
             />
         </div>
     )

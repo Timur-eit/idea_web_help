@@ -10,22 +10,23 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
-    // TODO if you want search data by parts
-    // if (pages[req.query.search]) {
-    //   return res.status(200).send(pages[req.query.search])
-    // } else {
-    //   return res.status(404).send('Data is not found')
-    // }
-    const matches = []
-    for (const pageId in pages) {
-        if (pageId.id.includes(req.query.search)) {
-            matches.push(pageId.id)
-        }
-    }
+	const requestValue = req.query.search
+    const matches = {}
 
-    if (matches.length > 0) {
-        const foundId = {}
+	if (requestValue.length < 3) {
+		return res.status(200).send(matches)	
+	} else if (requestValue.length === '') {
+		return res.status(400).send('please input search value with more than 3 chars')
+	} else {
+		for (const pageId in pages) {
+			if (pages[pageId].title.includes(requestValue)) {
+				matches[pages[pageId].id] = pages[pageId].title
+			}
+		}
+	}
+    
 
+    if (Object.keys(matches).length > 0) {
         return res.status(200).send(matches)
     } else {
         return res.status(404).send('Data is not found')
@@ -35,16 +36,3 @@ app.get('/', (req, res) => {
 app.listen(4000, () => {
     console.log('application has launched')
 })
-
-// const http = require('http')
-// const host = '127.0.0.1'
-//
-// const server = http.createServer((req, res) => {
-//   console.log(req.url)
-//   res.statusCode = 200
-//   res.end('Hello w!')
-// })
-//
-// server.listen(4000, host, () => {
-//   console.log('application has launched')
-// })

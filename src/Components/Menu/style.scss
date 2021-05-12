@@ -67,16 +67,18 @@
 }
 
 .link-background {
-    // width: calc(20% + 30px);
     width: 100%;
     position: absolute;
-    // z-index: 11;
     background-color: rgba(0, 0, 0, 0.1);
-    // background-color: yellow;
     left: 0;
     display: none;
 
     &.active {
+        display: block;
+    }
+
+    &.highlighted {
+        background-color: yellow;
         display: block;
     }
 }
