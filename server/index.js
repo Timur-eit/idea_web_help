@@ -11,7 +11,27 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   // TODO if you want search data by parts
-  res.status(200).send(pages[req.query.search])
+  // if (pages[req.query.search]) {
+    //   return res.status(200).send(pages[req.query.search])
+    // } else {
+      //   return res.status(404).send('Data is not found')
+      // }
+  const matches = []
+  for (const pageId in pages) {
+    if (pageId.id.includes(req.query.search)) {
+      matches.push(pageId.id)
+    }  
+  }
+  
+  if (matches.length > 0) {
+    const foundId = {}
+    
+    return res.status(200).send(matches)
+  } else {
+    return res.status(404).send('Data is not found')
+  }
+
+
 })
 
 app.listen(4000, () => {

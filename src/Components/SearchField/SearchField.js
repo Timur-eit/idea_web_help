@@ -9,15 +9,17 @@ let SearchField = ({
                      getSearchedData,
                      pageList,
                      activePages,
-                     topLevelIds
+                     topLevelIds,
+                     setActivePage,
+                     setCurrentId
+
                    }) => {
 
   const pages = pageList.entities.pages
 
-  const searchHandler = (e) => {
+  function searchHandler(e) {
     const {value} = e.target
-
-    const matches = []
+    
 
     // if (activePages.length > 0) {
     //   for (const pageId of activePages) {
@@ -40,9 +42,16 @@ let SearchField = ({
     //     }
     //   }
     // }
-    filterData(value)
+    // filterData(value)
 
-    console.log(matches)
+
+
+    fetch(`http://localhost:4000/?search=${value}`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        // setCurrentId(data.id)
+      })
   }
 
   const debouncedSearchHandler = _.debounce(searchHandler, 2000, {'maxWait': 7000})

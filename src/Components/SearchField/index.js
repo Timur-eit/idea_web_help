@@ -8,7 +8,8 @@ import {
   setActivePage,
   activePagesSelector,
   getSearchedData,
-  topLevelIdsSelector
+  topLevelIdsSelector,
+  setCurrentId
 } from 'modules/pages'
 
 let SearchFieldContainer = connect(state => ({
@@ -19,6 +20,7 @@ let SearchFieldContainer = connect(state => ({
   filterData,
   setActivePage,
   getSearchedData,
+  setCurrentId,
 })(SearchField)
 
 SearchFieldContainer = withRouter(SearchFieldContainer)

@@ -67,33 +67,19 @@ export default function reducer(state = ReducerRecord, action) {
  * Selectors
  * */
 
-export const stateSelector = state => state[moduleName]
-export const pageListSelector = createSelector(stateSelector, state => state.pageList)
-export const topLevelIdsSelector = createSelector(stateSelector, state => (state.pageList && state.pageList.topLevelIds) || [])
-export const activePagesSelector = createSelector(stateSelector, state => {
-  if(state.searchData) {
-    return [state.searchData.id]
-  } else {
-    return state.activePages
-  }
+ export const stateSelector = state => state[moduleName]
+ export const pageListSelector = createSelector(stateSelector, state => state.pageList) // TODO: make filter here
+ export const topLevelIdsSelector = createSelector(stateSelector, state => (state.pageList && state.pageList.topLevelIds) || [])
+ export const activePagesSelector = createSelector(stateSelector, state => state.activePages)
+ export const currentIdSelector = createSelector(stateSelector, state => state.currentId)
+ export const routerPageSelector = createSelector(state => state, state => {
+   const id = state[moduleName].currentId
+   const page = state[moduleName].pageList.entities.pages[id]
+   return (page && page['anchors']) || []
+ })
+ export const clickedIdSelector = createSelector(stateSelector, state => state.clickedId)
 
-})
-export const currentIdSelector = createSelector(stateSelector, state => {
-
-  if(state.searchData) {
-    return state.searchData.id
-  } else {
-    return state.currentId
-  }
-})
-export const routerPageSelector = createSelector(state => state, state => {
-  const id = state[moduleName].currentId
-  const page = state[moduleName].pageList.entities.pages[id]
-  return (page && page['anchors']) || []
-})
-export const clickedIdSelector = createSelector(stateSelector, state => state.clickedId)
-
-/**
+ /**
  * Action Creator
  * */
 
@@ -109,7 +95,7 @@ export function filterData(queryString) {
       payload: data
     })
 
-    fetch(`http://localhost:4000/?search=${queryString}`)
+    fetch(`http://localhost:3000/?search=${queryString}`)
       .then(res => res.json())
       .then(data => {
         dispatch ({
