@@ -70,16 +70,16 @@ function List(props) {
         }
 
         if (foundId.length > 0) {
-            console.log('xxx')
+            // console.log('xxx')
             
             foundId.forEach(id => {
                 if (pages[id].parentId === undefined) {
                     setClickedId(pages[id])
                 } else {
                     // setHighlightHandler(id)
-                    console.log('lll')
+                    // console.log('lll')
                     const depth = pages[id].level
-                    console.log(depth)
+                    // console.log(depth)
 
                     let currentId = pages[id]
                     for (let i = depth; i >= 0; i--) {
@@ -96,7 +96,7 @@ function List(props) {
         }
     }, [clickedId.length, arrowPosition, foundId, pages, setActivePage, setClickedId])
 
-    console.log(foundId)
+    // console.log(foundId)
 
     return (
         <div className="menu">
