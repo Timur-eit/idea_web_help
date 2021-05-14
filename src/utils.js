@@ -242,10 +242,10 @@ export function setMenuScrollHandler(setScrollState) {
     const menuHeight = document.querySelector('.menu-list__container').offsetHeight
     const currentMenuScrollPosition = document.querySelector('.menu-list__container').scrollTop
 
-    console.log('activeTopPosition ' + activeTopPosition)
-    console.log('menuHeight ' + menuHeight)
-    console.log('currentMenuScrollPosition ' + currentMenuScrollPosition)
-    console.log('menuHeight - activeTopPosition ' + (menuHeight - activeTopPosition))
+    // console.log('activeTopPosition ' + activeTopPosition)
+    // console.log('menuHeight ' + menuHeight)
+    // console.log('currentMenuScrollPosition ' + currentMenuScrollPosition)
+    // console.log('menuHeight - activeTopPosition ' + (menuHeight - activeTopPosition))
 
     if (menuHeight - activeTopPosition < 40 && menuHeight - activeTopPosition > 0) {
         setScrollState(currentMenuScrollPosition + 60)
