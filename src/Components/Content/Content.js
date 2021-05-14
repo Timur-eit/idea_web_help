@@ -4,17 +4,13 @@ import { useSpring, animated, config } from 'react-spring'
 import './style.scss'
 
 function Content({ pageList, routerPage, currentId }) {
-    // console.log(routerPage)
-
     const anchors = pageList.entities.anchors
-    // const currentIdAnchors = routerPage
-    // const props = useSpring({ to: { opacity: 1 }, from: { opacity: 0 } })
 
     const [flip, set] = useState(false)
     const props = useSpring({
         to: { opacity: 1 },
         from: { opacity: 0 },
-        // reset: wtrue,
+        reset: true,
         reverse: flip,
         delay: 200,
         config: config.molasses,
@@ -23,9 +19,8 @@ function Content({ pageList, routerPage, currentId }) {
 
     return (
         <div className="content__container">
-            {/* <animated.div style={props}>I will fade in</animated.div> */}
             <div className="content">
-                <animated.h1 style={props}>Web-Help Visual Guidelines</animated.h1>
+                <animated.h1 style={!currentId ? props : null}>Web-Help Visual Guidelines</animated.h1>
                 {routerPage && currentId ? (
                     routerPage.map((anchorId) => {
                         const url = anchors[anchorId].url
@@ -38,7 +33,7 @@ function Content({ pageList, routerPage, currentId }) {
                         )
                     })
                 ) : (
-                    <h3>Please select an item from menu on the left</h3>
+                    <animated.h3 style={!currentId ? props : null}>Please select an item from menu on the left</animated.h3>
                 )}
             </div>
         </div>
