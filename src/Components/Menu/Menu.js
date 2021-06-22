@@ -5,7 +5,7 @@ import Mousetrap from 'mousetrap'
 import { batch } from 'react-redux'
 import { Fragment, useCallback, useMemo, useState, useEffect } from 'react'
 import { getCoords, ArrowKeysHandler, setMenuScrollHandler } from 'utils'
-import SearchFieldContainer from 'Components/SearchField'
+// import SearchFieldContainer from 'Components/SearchField'
 
 function List(props) {
     const {
@@ -203,7 +203,7 @@ function Menu({
 
     return (
         <div className="menu-list__container">
-            <SearchFieldContainer />
+            {/* <SearchFieldContainer /> */}
             <List
                 key={activePages}
                 activePages={activePages}
