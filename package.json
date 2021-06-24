@@ -1,5 +1,6 @@
 {
     "name": "idea_web_help",
+    "homepage": "https://greatdeal.space/web-help-menu",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
