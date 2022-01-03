@@ -1,13 +1,8 @@
-import { connect } from 'react-redux'
-import SearchField from './SearchField'
-import { withRouter } from 'react-router'
+import { connect } from 'react-redux';
+import SearchField from './SearchField';
+import { withRouter } from 'react-router';
 
-import {
-    pageListSelector,
-    activePagesSelector,
-    topLevelIdsSelector,
-    setFoundId
-} from 'modules/pages'
+import { pageListSelector, activePagesSelector, topLevelIdsSelector, setFoundId } from 'modules/pages';
 
 let SearchFieldContainer = connect(
     (state) => ({
@@ -15,11 +10,11 @@ let SearchFieldContainer = connect(
         activePages: activePagesSelector(state),
         topLevelIds: topLevelIdsSelector(state),
     }),
-    {  
+    {
         setFoundId,
     }
-)(SearchField)
+)(SearchField);
 
-SearchFieldContainer = withRouter(SearchFieldContainer)
+SearchFieldContainer = withRouter(SearchFieldContainer);
 
-export default SearchFieldContainer
+export default SearchFieldContainer;

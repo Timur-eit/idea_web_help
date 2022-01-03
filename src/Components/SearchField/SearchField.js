@@ -1,28 +1,24 @@
-import React from 'react'
-import { Field, reduxForm } from 'redux-form' // ? react final form
-import './style.scss'
+import React from 'react';
+import { Field, reduxForm } from 'redux-form';
+import './style.scss';
 
-import _ from 'lodash'
+import _ from 'lodash';
 
-let SearchField = ({
-    pageList,
-    setFoundId
-}) => {
-    
+let SearchField = ({ pageList, setFoundId }) => {
     function searchHandler(e) {
-        const { value } = e.target
+        const { value } = e.target;
 
         fetch(`http://localhost:4000/?search=${value}`)
             .then((res) => res.json())
             .then((data) => {
-                console.log(data)
-                setFoundId(data)
-            })
+                console.log(data);
+                setFoundId(data);
+            });
     }
 
     const debouncedSearchHandler = _.debounce(searchHandler, 2000, {
         maxWait: 7000,
-    })
+    });
 
     return (
         <div className="search__container">
@@ -33,20 +29,20 @@ let SearchField = ({
                     type="text"
                     placeholder="search"
                     onChange={(e) => {
-                        console.log(e.target.value)
-                        debouncedSearchHandler(e)
+                        console.log(e.target.value);
+                        debouncedSearchHandler(e);
                     }}
                 />
             </div>
         </div>
-    )
-}
+    );
+};
 
 SearchField = reduxForm(
     {
         form: 'searchField',
     },
     {}
-)(SearchField)
+)(SearchField);
 
-export default SearchField
+export default SearchField;

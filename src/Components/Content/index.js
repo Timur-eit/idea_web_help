@@ -1,5 +1,5 @@
-import { connect } from 'react-redux'
-import Content from './Content'
+import { connect } from 'react-redux';
+import Content from './Content';
 
 import {
     topLevelIdsSelector,
@@ -8,7 +8,7 @@ import {
     activePagesSelector,
     currentIdSelector,
     routerPageSelector,
-} from 'modules/pages'
+} from 'modules/pages';
 
 export default connect(
     (state) => ({
@@ -21,4 +21,4 @@ export default connect(
     {
         setActivePage,
     }
-)(Content)
+)(Content);
